@@ -82,11 +82,11 @@ class ComicSerializer(ModelSerializer):
         return serializer.data
 
     def get_likes(self, obj):
-        likes = obj.likes.all()
+        likes = obj.likes
         serializer = UserSerializer(likes, many=True)
         return serializer.data
 
     def get_favourites(self, obj):
-        favourites = obj.favourites.all()
+        favourites = obj.favourites
         serializer = UserSerializer(favourites, many=True)
         return serializer.data

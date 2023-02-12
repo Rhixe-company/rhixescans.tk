@@ -16,7 +16,7 @@ import Spinner from "../components/ui/Spinner";
 import Message from "../components/utils/Message";
 import { listComicDetails } from "../actions/comicsActions";
 
-import { bookmarkComic, LikeComic } from "../actions/bookmarkActions";
+import { LikeComic, addToBookmark } from "../actions/bookmarkActions";
 import {
   FaBookmark,
   FaHeart,
@@ -42,7 +42,6 @@ function ComicScreen({ match, history }) {
 
   const comicBookmarkLike = useSelector((state) => state.comicBookmarkLike);
   const {
-    result,
     error: errorLike,
     loading: loadingLike,
     success: successLike,
@@ -74,13 +73,18 @@ function ComicScreen({ match, history }) {
 
   const bookmarkHandler = (e) => {
     e.preventDefault();
-    dispatch(bookmarkComic(match.params.id));
+    dispatch(addToBookmark(match.params.id));
   };
 
   const likeHandler = (e) => {
     e.preventDefault();
     dispatch(LikeComic(match.params.id));
   };
+  const fav = [];
+  for (let index = 0; index < comic?.favourites.length; index++) {
+    fav.push(comic.favourites[index]);
+  }
+  console.log(fav);
 
   return (
     <div>
@@ -168,12 +172,39 @@ function ComicScreen({ match, history }) {
                 <ListGroup.Item>
                   <strong>Released:</strong> {comic?.released}
                 </ListGroup.Item>
+                {/* 
                 <ListGroup.Item>
-                  {comic?.favourites?.length > 0 ? (
+                  {fav.map((index) => (
+                    <>
+                      {fav.id === index.id ? (
+                        <Button
+                          className="btn btn-danger btn-sm"
+                          onClick={bookmarkHandler}
+                        >
+                          Remove
+                          <FaUserCheck />
+                        </Button>
+                      ) : (
+                        <Button
+                          className="btn btn-default btn-sm"
+                          onClick={bookmarkHandler}
+                        >
+                          Add
+                          <FaBookmark />
+                        </Button>
+                      )}
+                    </>
+                  ))}
+                </ListGroup.Item> */}
+
+                <ListGroup.Item>
+                  {comic?.favourites.length > 0 ||
+                  comic?.favourites?.id === userInfo.id ? (
                     <Button
                       className="btn btn-danger btn-sm"
                       onClick={bookmarkHandler}
                     >
+                      Remove
                       <FaUserCheck />
                     </Button>
                   ) : (
@@ -181,12 +212,15 @@ function ComicScreen({ match, history }) {
                       className="btn btn-default btn-sm"
                       onClick={bookmarkHandler}
                     >
+                      Add
                       <FaBookmark />
                     </Button>
                   )}
                 </ListGroup.Item>
+
                 <ListGroup.Item>
-                  {comic?.likes?.length > 0 && result > 0 ? (
+                  {comic?.likes?.length > 0 ||
+                  comic?.likes?.id === userInfo.id ? (
                     <div>
                       <strong
                         className="text-default text-center mb-3"
@@ -198,6 +232,7 @@ function ComicScreen({ match, history }) {
                         onClick={likeHandler}
                         className="btn btn-danger btn-sm"
                       >
+                        Unlike
                         <FaHeartBroken />
                       </Button>
                     </div>
@@ -213,6 +248,7 @@ function ComicScreen({ match, history }) {
                         className="btn btn-default btn-sm"
                         onClick={likeHandler}
                       >
+                        Like
                         <FaHeart />
                       </Button>
                     </div>

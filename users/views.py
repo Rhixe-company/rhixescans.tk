@@ -1,13 +1,10 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework import status, generics
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import CustomUserSerializer, UserSerializer
-from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import *
 from rest_framework.permissions import AllowAny
 from .models import *
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth.hashers import make_password
@@ -30,17 +27,6 @@ class CustomUserCreate(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    def validate(self, attrs):
-        data = super().validate(attrs)
-
-        serializer = UserSerializer(self.user).data
-        for k, v in serializer.items():
-            data[k] = v
-
-        return data
-
-
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
@@ -49,7 +35,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 @permission_classes([IsAuthenticated])
 def updateUserProfile(request):
     user = request.user
-    serializer = CustomUserSerializer(user, many=False)
+    serializer = UserSerializer(user, many=False)
 
     data = request.data
     # user.first_name = data['first_name']
@@ -82,7 +68,7 @@ def getUserProfile(request):
 @permission_classes([IsAdminUser])
 def getUsers(request):
     users = NewUser.objects.all()
-    serializer = UserSerializer(users, many=True)
+    serializer = CustomUserSerializer(users, many=True)
     return Response(serializer.data)
 
 
@@ -91,7 +77,7 @@ def getUsers(request):
 def getUserById(request, pk):
     user = NewUser.objects.get(id=pk)
     chapters = user.chapter_set.all()
-    serializer = UserSerializer(user, many=False)
+    serializer = CustomUserSerializer(user, many=False)
     serializer1 = ChapterSerializer(chapters, many=True)
     context = {
         'user': serializer.data,

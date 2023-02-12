@@ -1,87 +1,92 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { bookmarkComic, bookmarkComicList } from "../actions/bookmarkActions";
+import {
+  bookmarkComic,
+  bookmarkComicList,
+  removeFromBookmark,
+  addToBookmark,
+} from "../actions/bookmarkActions";
 import Spinner from "../components/ui/Spinner";
 import Message from "../components/utils/Message";
 import Rating from "../components/utils/Rating";
 import { Card, ListGroup, Button, Col, Row } from "react-bootstrap";
-
+import { FaTrash } from "react-icons/fa";
 const BookmarksScreen = ({ history }) => {
   const dispatch = useDispatch();
-  const comicBookmarkList = useSelector((state) => state.comicBookmarkList);
-  const { error, loading, comics } = comicBookmarkList;
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-  const comicsBookmark = useSelector((state) => state.comicsBookmark);
-  const {
-    error: errorBookmark,
-    loading: loadingBookmark,
-    success: successBookmark,
-  } = comicsBookmark;
+  const bookmark = useSelector((state) => state.bookmark);
+  const { bookmarkItems } = bookmark;
+
   useEffect(() => {
     if (!userInfo) {
       history.push("/login");
     }
+  }, [history, userInfo, dispatch]);
 
-    dispatch(bookmarkComicList());
-  }, [history, userInfo, dispatch, successBookmark]);
+  // const removeFromBookmarkHandler = (id) => {
+  //   dispatch(removeFromBookmark(id));
+  // };
 
   function bookmarkHandler(e) {
     e.preventDefault();
     const id = e.target.value;
-
-    dispatch(bookmarkComic(id));
+    console.log(id);
+    dispatch(removeFromBookmark(id));
   }
+
+  const comics = bookmarkItems?.comic;
+  const chapters = bookmarkItems?.chapters;
 
   return (
     <div>
       <Row>
-        {loading && <Spinner />}
-        {error && <Message variant="danger">{error}</Message>}
-        {loadingBookmark && <Spinner />}
-        {errorBookmark && <Message variant="danger">{errorBookmark}</Message>}
-        {comics?.length > 0 ? (
+        {bookmarkItems?.length > 0 ? (
           <Col sm={12} md={6} lg={4} xl={3}>
-            {comics.map((product) => (
-              <Card key={product.id} className="my-2 p-2 rounded">
-                <Link to={`/comic/${product.id}`}>
-                  <Card.Img src={product.image} />
+            {bookmarkItems.map((comic) => (
+              <Card key={comic.id} className="my-2 p-2 rounded">
+                <Link to={`/comic/${comic.id}`}>
+                  <Card.Img src={comic.image} />
                 </Link>
 
                 <Card.Body>
-                  <Link to={`/comic/${product.id}`}>
+                  <Link to={`/comic/${comic.id}`}>
                     <Card.Title as="div">
-                      <strong>{product.title}</strong>
+                      <strong>{comic.title}</strong>
                     </Card.Title>
                   </Link>
 
-                  <Card.Text as="div">
+                  {/* <Card.Text as="div">
                     <div className="my-2">
                       <Rating
-                        value={product.rating}
-                        text={`${product.rating} rating`}
+                        value={comic.rating}
+                        text={`${comic.rating} rating`}
                         color={"#f8e825"}
                       />
                     </div>
+                  </Card.Text> */}
+                  <Card.Text as="div">
                     <Button
                       onClick={bookmarkHandler}
-                      value={product.id}
-                      className="btn btn-sm btn-danger"
+                      value={comic.id}
+                      type="button"
+                      variant="light"
                     >
-                      Remove From Bookmarks
+                      <FaTrash />
                     </Button>
                   </Card.Text>
 
-                  <Card.Text as="h3">{product.status}</Card.Text>
-                  <Card.Text>
+                  <Card.Text as="h3">{comic.status}</Card.Text>
+                  <Card.Text as="div">
                     <h4>Chapters</h4>
-                    {product?.chapters?.length === 0 && (
+                    {bookmarkItems?.chapters?.length === 0 && (
                       <Message variant="info">No Chapters</Message>
                     )}
 
                     <ListGroup variant="flush">
-                      {product?.chapters?.map((chapter) => (
+                      {bookmarkItems?.chapters?.map((chapter) => (
                         <ListGroup.Item key={chapter.id}>
                           <Link to={`/chapter/${chapter.id}/`}>
                             {chapter.name}
@@ -95,7 +100,11 @@ const BookmarksScreen = ({ history }) => {
             ))}
           </Col>
         ) : (
-          <div></div>
+          <div>
+            <Link to="/" className="btn btn-light my-3">
+              Go Back
+            </Link>
+          </div>
         )}
       </Row>
     </div>

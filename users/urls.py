@@ -9,6 +9,7 @@ urlpatterns = [
 
     path('create/', views.CustomUserCreate.as_view(), name="create_user"),
 
+
     path('', views.getUsers, name="users"),
 
     path('profile/', views.getUserProfile, name="users-profile"),

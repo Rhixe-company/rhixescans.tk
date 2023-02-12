@@ -32,11 +32,11 @@ SECRET_KEY = os.getenv('SECRET')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 # DEBUG = os.getenv('DEBUG')
-# ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # ALLOWED_HOSTS = ['*']
 
-ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'localhost',
-                 'rhixescans.tk', 'www.rhixescans.tk']
+# ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'localhost',
+#                  'rhixescans.tk', 'www.rhixescans.tk']
 
 # Application definition
 
@@ -176,8 +176,7 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://localhost",
-    "http://127.0.0.1",
+    "http://127.0.0.1:3000",
 ]
 
 # Custom user model

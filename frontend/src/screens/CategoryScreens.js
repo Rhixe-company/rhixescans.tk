@@ -22,7 +22,7 @@ const CategoryScreens = ({ match }) => {
         <Message variant="danger">{error}</Message>
       ) : (
         <div>
-          <h3>List Of {category?.name} Comics</h3>
+          <h1>List Of {category?.name} Comics</h1>
           <Row>
             {comics?.map((product) => (
               <Col key={product.id} sm={12} md={6} lg={4} xl={3}>

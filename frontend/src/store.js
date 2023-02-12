@@ -36,6 +36,7 @@ import {
   comicBookmarkLikeReducer,
   comicBookmarkListReducer,
   comicBookmarkReducer,
+  bookmarkReducer,
 } from "./reducers/bookmarkReducers";
 
 import {
@@ -71,13 +72,21 @@ const reducer = combineReducers({
   chapterUpdate: chapterUpdateReducer,
   chaptersTopRatedReducer: chaptersTopRatedReducer,
   chapterReviewCreate: chapterReviewCreateReducer,
+  bookmark: bookmarkReducer,
 });
+
+const bookmarkItemsFromStorage = localStorage.getItem("bookmarkItems")
+  ? JSON.parse(localStorage.getItem("bookmarkItems"))
+  : [];
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
 
 const initialState = {
+  bookmark: {
+    bookmarkItems: bookmarkItemsFromStorage,
+  },
   userLogin: { userInfo: userInfoFromStorage },
 };
 
