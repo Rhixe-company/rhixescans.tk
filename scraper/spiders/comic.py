@@ -7,7 +7,7 @@ class ComicSpider(scrapy.Spider):
     name = 'comic'
 
     def start_requests(self):
-        yield scrapy.Request('https://www.asurascans.com/manga/1672760368-solo-leveling/')
+        yield scrapy.Request('https://www.asurascans.com/manga/1672760368-murim-login/')
 
     def parse(self, response):
         title = response.css('h1.entry-title::text').get().strip()
@@ -54,8 +54,11 @@ class ComicSpider(scrapy.Spider):
             'genres': obj1
         }
 
-        for link in response.css('ul.clstyle li a::attr(href)'):
-            yield response.follow(link.get(), callback=self.parse_chapters)
+        # for link in response.css('ul.clstyle li a::attr(href)'):
+        #     yield response.follow(link.get(), callback=self.parse_chapters)
+
+        chapter_page = response.css('ul.clstyle li a::attr(href)').get()
+        yield response.follow(chapter_page, callback=self.parse_chapters)
 
     def parse_chapters(self, response):
         slug = response.css('.allc a::attr(href)').get().split("/")[-2]

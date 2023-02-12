@@ -1,8 +1,8 @@
 from django.db import models
+from .managers import NewManager
 from users.models import NewUser
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django.db.models import Q
 from io import BytesIO
 from django.core import files
 from requests_html import HTMLSession
@@ -44,11 +44,6 @@ class Categorys(models.Model):
 
 
 class Comic(models.Model):
-
-    class NewManager(models.Manager):
-        def get_queryset(self):
-            return super().get_queryset() .filter(Q(status='Completed') |
-                                                  Q(status='Ongoing'))
 
     options = (
         ('Completed', 'Completed'),
@@ -108,10 +103,6 @@ class Comic(models.Model):
             self.image.save(file_name, files.File(pb),
                             save=True)
             return super().save(*args, **kwargs)
-
-
-class NewManager(models.Manager):
-    pass
 
 
 class ExtraManagers(models.Model):
