@@ -1,0 +1,23 @@
+{
+  "name": "rhixescans.tk",
+  "version": "1.0.0",
+  "description": "Manhwa and Manhua",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm start --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "dev": "concurrently \"npm run build\" \"npm run start\"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
+  },
+  "keywords": [
+    {
+      "Webtoons-": "Manhua, Manhua"
+    }
+  ],
+  "author": "Alexander Iseghohi",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^7.6.0",
+    "nodemon": "^2.0.20"
+  }
+}

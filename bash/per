@@ -1,0 +1,5 @@
+#!/bin/bash
+
+sudo gpasswd -a www-data bot
+
+sudo chmod g+x /home/bot ; sudo chmod g+x /home/bot/Desktop/dev/projects/rhixescans.tk ; sudo chmod g+x /home/bot/Desktop/dev/projects/rhixescans.tk/static ; sudo chmod g+x /home/bot/Desktop/dev/projects/rhixescans.tk/media ; sudo chmod g+x /home/bot/Desktop/dev/projects/rhixescans.tk/frontend/build ; sudo chmod g+x /home/bot/Desktop/dev/projects/rhixescans.tk/frontend/build/static

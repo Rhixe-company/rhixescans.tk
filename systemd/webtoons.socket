@@ -1,0 +1,8 @@
+[Unit]
+Description=webtoons socket
+
+[Socket]
+ListenStream=/run/webtoons.sock
+
+[Install]
+WantedBy=sockets.target

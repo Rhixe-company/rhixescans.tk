@@ -1,0 +1,17 @@
+[Unit]
+Description=webtoons daemon
+Requires=webtoons.socket
+After=network.target
+
+[Service]
+User=bot
+Group=www-data
+WorkingDirectory=/home/bot/Desktop/dev/projects/rhixescans.tk
+    ExecStart=/home/bot/Desktop/dev/projects/rhixescans.tk/env/bin/gunicorn \
+    --access-logfile - \
+    --workers 3 \
+    --bind unix:/run/webtoons.sock \
+    rhixescans.wsgi:application
+    
+[Install]
+WantedBy=multi-user.target

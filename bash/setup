@@ -1,0 +1,7 @@
+#!/bin/bash
+
+sudo apt update ; sudo apt install python3-venv python3-dev libpq-dev postgresql postgresql-contrib nginx curl -y 
+sudo ufw allow 8000 
+
+#source env/bin/activate && python3 manage.py runserver 0.0.0.0:8000 
+source env/bin/activate && gunicorn --bind 0.0.0.0:8000 rhixescans.wsgi
