@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ sudo systemctl daemon-reload && sudo systemctl restart nginx webtoons && sudo systemctl status nginx webtoons
