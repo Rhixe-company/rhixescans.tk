@@ -1,13 +1,10 @@
-html,
-body {
-  background: #000 url('bg.jpg') no-repeat center center/cover;
-  height: 100vh;
-
-}
-
 .App {
 
   color: white;
+
+  font-family: 'Playfair', source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  align-items: center;
+  justify-content: space-around;
 }
 
 .App-logo {
@@ -61,9 +58,6 @@ h3 {
   padding: 0;
 }
 
-img {
-  width: 100%;
-}
 
 ul {
   list-style-type: none;
@@ -75,8 +69,8 @@ li {
 }
 
 a {
-  color: gray;
   text-decoration: none;
+  color: transparent;
 }
 
 .rating span {

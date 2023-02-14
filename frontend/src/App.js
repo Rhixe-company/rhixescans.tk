@@ -1,4 +1,3 @@
-import "./App.css";
 import React, { Component, Fragment } from "react";
 import { HashRouter as Router, Route } from "react-router-dom";
 import { Container } from "react-bootstrap";
@@ -25,10 +24,10 @@ export class App extends Component {
   render() {
     return (
       <Router>
-        <Fragment>
+        <Container className="App" fluid>
           <Header />
           <main className="py-3">
-            <Container className="App" fluid>
+            <Fragment>
               <Route path="/" component={HomeScreen} exact />
               <Route path="/series" component={SeriesScreen} />
               <Route path="/chapter/:id" component={ChapterScreen} />
@@ -51,10 +50,10 @@ export class App extends Component {
                 path="/admin/chapter/:id/edit"
                 component={ChaptersEditScreen}
               />
-            </Container>
+            </Fragment>
           </main>
           <Footer />
-        </Fragment>
+        </Container>
       </Router>
     );
   }

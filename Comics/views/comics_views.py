@@ -178,7 +178,7 @@ def getComic(request, pk):
 
 
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
+# @permission_classes([IsAdminUser])
 def getChapters(request):
     query = request.GET.get('keyword') if request.GET.get(
         'keyword') != None else ''
@@ -209,7 +209,7 @@ def getChapters(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def getChapter(request, pk):
     chapter = Chapter.objects.get(id=pk)
     comicId = chapter.comic

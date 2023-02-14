@@ -22,14 +22,15 @@ class ChapterInline(admin.TabularInline):
     model = Chapter
     extra = 1
 
+
 @admin.register(models.Comic)
 class ComicAdmin(admin.ModelAdmin):
-    list_display = ('title','image','id','slug','author','rating')
-    prepopulated_fields = {'slug':('title',),}
-    
+    list_display = ('title', 'images', 'id', 'slug', 'author', 'rating')
+    prepopulated_fields = {'slug': ('title',), }
+
 
 class ChapterAdmin(admin.ModelAdmin):
-    list_display = ('name','comic','id', 'numPages')
+    list_display = ('name', 'comic', 'id', 'numPages')
     inlines = [PageInline, ReviewInline]
 
 

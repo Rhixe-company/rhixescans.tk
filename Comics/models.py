@@ -30,14 +30,7 @@ class Genre(models.Model):
 
 
 class Categorys(models.Model):
-
-    options = (
-        ('Manhwa', 'Manhwa'),
-        ('Manhua', 'Manhua'),
-
-    )
-    name = models.CharField(choices=options,
-                            max_length=100, default='Manhwa')
+    name = models.CharField(max_length=100, unique=True, null=True)
 
     def __str__(self):
         return self.name
@@ -59,10 +52,9 @@ class Comic(models.Model):
     description = models.TextField(blank=True, null=True)
     # image = models.ImageField(
     #    upload_to=None, max_length=100000, default='placeholder.png', height_field=None, width_field=None)
-    image_urls = models.URLField(max_length=100000, blank=True)
-    image = models.ImageField(
-        upload_to=comics_images_location, max_length=100000,
-        blank=True)
+    image_urls = models.URLField(max_length=100000, unique=True, null=True)
+    images = models.ImageField(
+        upload_to=comics_images_location, max_length=100000, null=False, height_field=None, width_field=None)
     rating = models.DecimalField(max_digits=9, decimal_places=1, blank=True)
     status = models.CharField(
         max_length=15, choices=options, default='Ongoing')
@@ -70,7 +62,8 @@ class Comic(models.Model):
     artist = models.CharField(max_length=100, blank=True, null=True)
     released = models.CharField(max_length=100, blank=True, null=True)
     serialization = models.CharField(max_length=1000, blank=True, null=True)
-    numChapters = models.IntegerField(default=0, blank=True)
+    numChapters = models.IntegerField(default=0, null=True, blank=True)
+    numReviews = models.IntegerField(default=0, null=True, blank=True)
     # genres = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
     # category = models.ForeignKey(
     #     Categorys, on_delete=models.SET_NULL, null=True, blank='False')
@@ -87,22 +80,24 @@ class Comic(models.Model):
     newmanager = NewManager()
 
     class Meta:
-        ordering = ('updated', 'title')
+        ordering = ('updated', 'created', 'title')
 
     def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):
 
-        if self.image == '' and self.image_urls != '':
+        if self.images == '' and self.image_urls != '':
             resp = s.get(self.image_urls,  stream=True, headers=headers)
             pb = BytesIO()
             pb.write(resp.content)
             pb.flush()
             file_name = self.image_urls.split("/")[-1]
-            self.image.save(file_name, files.File(pb),
-                            save=True)
+            self.images.save(file_name, files.File(pb),
+                             save=True)
             return super().save(*args, **kwargs)
+        else:
+            pass
 
 
 class ExtraManagers(models.Model):
@@ -127,7 +122,7 @@ class ComicsManager(Comic, ExtraManagers):
 class Chapter(models.Model):
     user = models.ForeignKey(NewUser, on_delete=models.SET_NULL, null=True)
     readers = models.ManyToManyField(
-        NewUser, blank=True, related_name='readers')
+        NewUser, blank=True, related_name='reader')
     comic = models.ForeignKey(Comic, on_delete=models.CASCADE)
     name = models.CharField(max_length=1000, unique=True, null=True)
     pages = models.ManyToManyField('Page', blank=True, related_name='pages')
@@ -147,9 +142,9 @@ class Chapter(models.Model):
 
 class Page(models.Model):
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE)
-    image_urls = models.URLField(max_length=100000, blank=False, null=False)
-    image = models.ImageField(
-        upload_to=comics_chapters_images_location, max_length=100000, blank=True)
+    image_urls = models.URLField(max_length=100000,  null=False, blank=False)
+    images = models.ImageField(upload_to=comics_chapters_images_location, null=False, blank=True,
+                               max_length=100000, height_field=None, width_field=None)
     # images = models.ImageField(
     #    upload_to=None, max_length=100000, height_field=None, width_field=None, null=True, blank=False)
 
@@ -158,15 +153,17 @@ class Page(models.Model):
 
     def save(self, *args, **kwargs):
 
-        if self.image == '' and self.image_urls != '':
+        if self.images == '' and self.image_urls != '':
             resp = s.get(self.image_urls,  stream=True, headers=headers)
             pb = BytesIO()
             pb.write(resp.content)
             pb.flush()
             file_name = self.image_urls.split("/")[-1]
-            self.image.save(file_name, files.File(pb),
-                            save=True)
+            self.images.save(file_name, files.File(pb),
+                             save=True)
             return super().save(*args, **kwargs)
+        else:
+            pass
 
 
 class Review(models.Model):

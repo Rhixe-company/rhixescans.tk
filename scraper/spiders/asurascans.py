@@ -7,7 +7,7 @@ class AsurascansSpider(scrapy.Spider):
     name = 'asurascans'
 
     def start_requests(self):
-        yield scrapy.Request('https://www.asurascans.com/manga/?page=1&order=update')
+        yield scrapy.Request('https://www.asurascans.com/manga/?page=1')
 
     def parse(self, response):
         for link in response.css('div.bsx a::attr(href)'):
@@ -16,7 +16,7 @@ class AsurascansSpider(scrapy.Spider):
         next_page = response.css('a.r::attr(href)')
         yield from response.follow_all(next_page, self.parse)
 
-    def parse_webtoon(self, response):
+    async def parse_webtoon(self, response):
         title = response.css('h1.entry-title::text').get().strip()
         alternativetitle = response.css('.wd-full span::text').get()
         slug = response.css('div.bixbox ol li a::attr(href)')[
@@ -38,7 +38,7 @@ class AsurascansSpider(scrapy.Spider):
         obj, created = ComicsManager.objects.filter(
             Q(title__icontains=title) |
             Q(slug__icontains=slug)
-        ).get_or_create(slug=slug, image_urls=image_urls,  rating=float(rating), status=status, description=description, released=released,  author=author,  artist=artist, alternativetitle=alternativetitle, serialization=serialization, defaults={'title': title, 'slug': slug})
+        ).get_or_create(slug=slug, image_urls=image_urls, title=title, rating=float(rating), status=status, description=description, released=released,  author=author,  artist=artist, alternativetitle=alternativetitle, serialization=serialization, defaults={'title': title})
         category = response.css('.imptdt a::text').get()
         obj2, created = Categorys.objects.filter(
             Q(name__icontains=category)
@@ -67,7 +67,7 @@ class AsurascansSpider(scrapy.Spider):
         chapter_page = response.css('ul.clstyle li a::attr(href)').get()
         yield response.follow(chapter_page, callback=self.parse_chapters)
 
-    def parse_chapters(self, response):
+    async def parse_chapters(self, response):
         slug = response.css('.allc a::attr(href)').get().split("/")[-2]
         title = response.css(".allc a::text").get().strip()
         name = response.css('.entry-title::text').get().strip()
@@ -82,7 +82,7 @@ class AsurascansSpider(scrapy.Spider):
                 ).get_or_create(comic=comic, name=name, defaults={'name': name, 'comic': comic})
                 obj1, created = Page.objects.filter(
                     Q(image_urls__icontains=img_url)
-                ).get_or_create(image_urls=img_url, chapter=obj, defaults={'image_urls': img_url, 'chapter': obj})
+                ).get_or_create(image_urls=img_url, chapter=obj, defaults={'image_urls': img_url})
                 obj.pages.add(obj1)
                 obj.numPages = obj.page_set.all().count()
 

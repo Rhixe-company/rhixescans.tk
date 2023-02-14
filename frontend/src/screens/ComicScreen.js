@@ -10,6 +10,7 @@ import {
   Button,
   NavDropdown,
   Nav,
+  Container,
 } from "react-bootstrap";
 import Rating from "../components/utils/Rating";
 import Spinner from "../components/ui/Spinner";
@@ -87,47 +88,51 @@ function ComicScreen({ match, history }) {
   console.log(fav);
 
   return (
-    <div>
-      <Link to="/" className="btn btn-light my-3">
-        Go Back
-      </Link>
+    <Container>
+      {loading && <Spinner />}
+      {error && (
+        <>
+          <Message variant="danger">{error}</Message>
+          <Link to="/" className="btn btn-light my-3">
+            Go Back
+          </Link>
+        </>
+      )}
       {loadingBookmark && <Spinner />}
       {errorBookmark && <Message variant="danger">{errorBookmark}</Message>}
       {loadingLike && <Spinner />}
       {errorLike && <Message variant="danger">{errorLike}</Message>}
-      {loading ? (
-        <Spinner />
-      ) : error ? (
-        <Message variant="danger">{error}</Message>
-      ) : (
-        <div>
-          <Row>
-            <Col md={6}>
-              <Image
-                fluid
-                className="thumbnail"
-                src={comic?.image}
-                alt={comic?.image}
-              />
-            </Col>
-            <Col md={6}>
-              <ListGroup variant="flush">
-                <ListGroup.Item>
-                  <h3>{comic?.title}</h3>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <strong>Alternativetitle:</strong> {comic?.alternativetitle}
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Rating
-                    value={comic?.rating}
-                    text={`Rating: ${comic?.rating} `}
-                    color={"#f8e825"}
-                  />
-                </ListGroup.Item>
+      <>
+        <Row>
+          <Col md={6}>
+            <Image
+              fluid
+              className="thumbnail"
+              src={comic?.images}
+              alt={comic?.images}
+            />
+          </Col>
+          <Col md={6}>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <h3>{comic?.title}</h3>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <strong>Alternativetitle:</strong> {comic?.alternativetitle}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Rating
+                  value={comic?.rating}
+                  text={`Rating: ${comic?.rating} `}
+                  color={"#f8e825"}
+                />
+              </ListGroup.Item>
 
-                <ListGroup.Item>
-                  <Nav className="ml-auto">
+              <ListGroup.Item>
+                <Nav className="ml-auto">
+                  {comic?.genres?.length === 0 ? (
+                    <Message variant="info">No Genres</Message>
+                  ) : (
                     <NavDropdown title="Genres" id="genres">
                       {comic?.genres?.map((item) => (
                         <LinkContainer key={item.id} to={`/genre/${item.id}`}>
@@ -135,44 +140,45 @@ function ComicScreen({ match, history }) {
                         </LinkContainer>
                       ))}
                     </NavDropdown>
-                  </Nav>
-                </ListGroup.Item>
+                  )}
+                </Nav>
+              </ListGroup.Item>
 
-                <ListGroup.Item>
-                  <strong>Artist:</strong> {comic?.artist}
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <strong>Published Date:</strong>{" "}
-                  {new Date(comic?.created).toLocaleString("en-US")}
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <strong>Author:</strong> {comic?.author}
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <strong>Category:</strong>
-                  {comic?.category?.map((item) => (
-                    <Link key={item.id} to={`/category/${item.id}`}>
-                      <Button
-                        className="btn btn-sm btn-default"
-                        variant="secondary"
-                      >
-                        {item.name}
-                      </Button>
-                    </Link>
-                  ))}
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <strong>Status:</strong> {comic?.status}
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <strong>Last Updated:</strong>{" "}
-                  {new Date(comic?.updated).toLocaleString("en-US")}
-                </ListGroup.Item>
+              <ListGroup.Item>
+                <strong>Artist:</strong> {comic?.artist}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <strong>Published Date:</strong>{" "}
+                {new Date(comic?.created).toLocaleString("en-US")}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <strong>Author:</strong> {comic?.author}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <strong>Category:</strong>
+                {comic?.category?.map((item) => (
+                  <Link key={item.id} to={`/category/${item.id}`}>
+                    <Button
+                      className="btn btn-sm btn-default"
+                      variant="secondary"
+                    >
+                      {item.name}
+                    </Button>
+                  </Link>
+                ))}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <strong>Status:</strong> {comic?.status}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <strong>Last Updated:</strong>{" "}
+                {new Date(comic?.updated).toLocaleString("en-US")}
+              </ListGroup.Item>
 
-                <ListGroup.Item>
-                  <strong>Released:</strong> {comic?.released}
-                </ListGroup.Item>
-                {/* 
+              <ListGroup.Item>
+                <strong>Released:</strong> {comic?.released}
+              </ListGroup.Item>
+              {/* 
                 <ListGroup.Item>
                   {fav.map((index) => (
                     <>
@@ -197,86 +203,87 @@ function ComicScreen({ match, history }) {
                   ))}
                 </ListGroup.Item> */}
 
-                <ListGroup.Item>
-                  {comic?.favourites.length > 0 ||
-                  comic?.favourites?.id === userInfo.id ? (
-                    <Button
-                      className="btn btn-danger btn-sm"
-                      onClick={bookmarkHandler}
+              <ListGroup.Item>
+                {comic?.favourites.length > 0 ||
+                comic?.favourites?.id === userInfo.id ? (
+                  <Button
+                    className="btn btn-danger btn-sm"
+                    onClick={bookmarkHandler}
+                  >
+                    Remove
+                    <FaUserCheck />
+                  </Button>
+                ) : (
+                  <Button
+                    className="btn btn-default btn-sm"
+                    onClick={bookmarkHandler}
+                  >
+                    Add
+                    <FaBookmark />
+                  </Button>
+                )}
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                {comic?.likes?.length > 0 ||
+                comic?.likes?.id === userInfo.id ? (
+                  <div>
+                    <strong
+                      className="text-default text-center mb-3"
+                      id="like_count"
                     >
-                      Remove
-                      <FaUserCheck />
+                      {comic?.likes?.length}
+                    </strong>
+                    <Button
+                      onClick={likeHandler}
+                      className="btn btn-danger btn-sm"
+                    >
+                      Unlike
+                      <FaHeartBroken />
                     </Button>
-                  ) : (
+                  </div>
+                ) : (
+                  <div>
+                    <strong
+                      className="text-default text-center mb-3"
+                      id="like_count"
+                    >
+                      {comic?.likes?.length}
+                    </strong>
                     <Button
                       className="btn btn-default btn-sm"
-                      onClick={bookmarkHandler}
+                      onClick={likeHandler}
                     >
-                      Add
-                      <FaBookmark />
+                      Like
+                      <FaHeart />
                     </Button>
-                  )}
+                  </div>
+                )}
+              </ListGroup.Item>
+            </ListGroup>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col md={6}>
+            <h4>Chapters</h4>
+            {chapters?.length === 0 && (
+              <Message variant="info">No Reviews</Message>
+            )}
+
+            <ListGroup variant="flush">
+              {chapters?.map((chapter) => (
+                <ListGroup.Item key={chapter.id}>
+                  <Link to={`/chapter/${chapter.id}/`}>
+                    <h3>{chapter.name}</h3>
+                  </Link>
                 </ListGroup.Item>
-
-                <ListGroup.Item>
-                  {comic?.likes?.length > 0 ||
-                  comic?.likes?.id === userInfo.id ? (
-                    <div>
-                      <strong
-                        className="text-default text-center mb-3"
-                        id="like_count"
-                      >
-                        {comic?.likes?.length}
-                      </strong>
-                      <Button
-                        onClick={likeHandler}
-                        className="btn btn-danger btn-sm"
-                      >
-                        Unlike
-                        <FaHeartBroken />
-                      </Button>
-                    </div>
-                  ) : (
-                    <div>
-                      <strong
-                        className="text-default text-center mb-3"
-                        id="like_count"
-                      >
-                        {comic?.likes?.length}
-                      </strong>
-                      <Button
-                        className="btn btn-default btn-sm"
-                        onClick={likeHandler}
-                      >
-                        Like
-                        <FaHeart />
-                      </Button>
-                    </div>
-                  )}
-                </ListGroup.Item>
-              </ListGroup>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col md={6}>
-              <h4>Chapters</h4>
-              {chapters?.length === 0 && (
-                <Message variant="info">No Reviews</Message>
-              )}
-
-              <ListGroup variant="flush">
-                {chapters?.map((chapter) => (
-                  <ListGroup.Item key={chapter.id}>
-                    <Link to={`/chapter/${chapter.id}/`}>{chapter.name}</Link>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            </Col>
-          </Row>
-        </div>
-      )}
-    </div>
+              ))}
+            </ListGroup>
+          </Col>
+        </Row>
+      </>
+    </Container>
   );
 }
 
