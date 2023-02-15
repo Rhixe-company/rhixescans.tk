@@ -1,6 +1,5 @@
 from django.urls import path
-from . import views
-
+from Comics.views import users_views as views
 
 app_name = 'users'
 

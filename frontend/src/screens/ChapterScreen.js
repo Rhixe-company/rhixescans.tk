@@ -44,15 +44,16 @@ const ChapterScreen = ({ match, history }) => {
   } = chapterReviewCreate;
 
   useEffect(() => {
-    if (!userInfo) {
+    if (userInfo) {
+      if (successchapterReview) {
+        dispatch({ type: CHAPTER_CREATE_REVIEW_RESET });
+        setRating(0);
+        setText("");
+      }
+      dispatch(listChapterDetails(chapterId, pageNumber, keyword));
+    } else {
       history.push("/login");
     }
-    if (successchapterReview) {
-      dispatch({ type: CHAPTER_CREATE_REVIEW_RESET });
-      setRating(0);
-      setText("");
-    }
-    dispatch(listChapterDetails(chapterId, pageNumber, keyword));
   }, [
     dispatch,
     chapterId,

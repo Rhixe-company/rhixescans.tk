@@ -61,6 +61,8 @@ function ComicScreen({ match, history }) {
       } else {
         dispatch(listComicDetails(comicId, pageNumber));
       }
+    } else {
+      history.push("/login");
     }
   }, [
     comicId,
@@ -70,6 +72,7 @@ function ComicScreen({ match, history }) {
     successBookmark,
     successLike,
     userInfo,
+    history,
   ]);
 
   const bookmarkHandler = (e) => {

@@ -32,7 +32,6 @@ SECRET_KEY = os.getenv(
     'SECRET', 'django-insecure-*6a(y4z02c+z9^hb)itp*l^@me25z-7(&ipkb5&n72c%o$6h3n')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-# DEBUG = os.getenv('DEBUG', False)
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # ALLOWED_HOSTS = ['*']
 
@@ -56,7 +55,7 @@ INSTALLED_APPS = [
     'scraper',
     'django_filters',
     'storages',
-    # 'rest_framework_simplejwt.token_blacklist',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 MIDDLEWARE = [
@@ -187,12 +186,12 @@ AUTH_USER_MODEL = "users.NewUser"
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=720),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=360),
-    # 'ROTATE_REFRESH_TOKENS': True,
-    # 'BLACKLIST_AFTER_ROTATION': True,
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': False,
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    # 'ROTATE_REFRESH_TOKENS': False,
+    # 'BLACKLIST_AFTER_ROTATION': False,
     'ALGORITHM': 'HS256',
-    'SIGNING_KEY': os.getenv('SECRET'),
+    'SIGNING_KEY': SECRET_KEY,
     'VERIFYING_KEY': None,
     'AUTH_HEADER_TYPES': ('Bearer', 'JWT'),
     'USER_ID_FIELD': 'id',

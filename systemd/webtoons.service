@@ -4,14 +4,20 @@ Requires=webtoons.socket
 After=network.target
 
 [Service]
-User=bot
-Group=www-data
-WorkingDirectory=/home/bot/Desktop/dev/projects/rhixescans.tk
-    ExecStart=/home/bot/Desktop/dev/projects/rhixescans.tk/env/bin/gunicorn \
+ExecStart=/home/bot/Desktop/dev/projects/rhixescans.tk/env/bin/gunicorn \
     --access-logfile - \
-    --workers 3 \
+    --workers 1 \
     --bind unix:/run/webtoons.sock \
     rhixescans.wsgi:application
+
+WorkingDirectory=/home/bot/Desktop/dev/projects/rhixescans.tk
+
+User=bot
+Group=www-data
+
+Restart=always
+
+
     
 [Install]
 WantedBy=multi-user.target

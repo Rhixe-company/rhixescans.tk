@@ -1,21 +1,13 @@
 from django.urls import path, include
 from django.contrib import admin
-# from rest_framework_simplejwt.views import (
-#     TokenObtainPairView,
-#     TokenRefreshView,
-# )
 from django.views.generic import TemplateView
 from django.conf.urls.static import static
 from django.conf import settings
-
 from rest_framework.schemas import get_schema_view
 from rest_framework.documentation import include_docs_urls
 
 
 urlpatterns = [
-    # # API Token Management
-    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # User Management
     path('api/users/', include('users.urls', namespace='users')),
     # Comics_API Application
@@ -32,5 +24,5 @@ urlpatterns = [
     ), name='api-schema'),
 ]
 
-
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -2,14 +2,15 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import {
-  bookmarkComic,
-  bookmarkComicList,
+  // bookmarkComic,
+  // bookmarkComicList,
+  // addToBookmark,
   removeFromBookmark,
-  addToBookmark,
 } from "../actions/bookmarkActions";
-import Spinner from "../components/ui/Spinner";
+// import Spinner from "../components/ui/Spinner";
+// import Rating from "../components/utils/Rating";
 import Message from "../components/utils/Message";
-import Rating from "../components/utils/Rating";
+
 import { Card, ListGroup, Button, Col, Row } from "react-bootstrap";
 import { FaTrash } from "react-icons/fa";
 const BookmarksScreen = ({ history }) => {
@@ -21,7 +22,9 @@ const BookmarksScreen = ({ history }) => {
   const { bookmarkItems } = bookmark;
 
   useEffect(() => {
-    if (!userInfo) {
+    if (userInfo) {
+      console.log("bookmarks....");
+    } else {
       history.push("/login");
     }
   }, [history, userInfo, dispatch]);
@@ -36,9 +39,6 @@ const BookmarksScreen = ({ history }) => {
     console.log(id);
     dispatch(removeFromBookmark(id));
   }
-
-  const comics = bookmarkItems?.comic;
-  const chapters = bookmarkItems?.chapters;
 
   return (
     <div>

@@ -12,6 +12,7 @@ function UserEditScreen({ match, history }) {
   const userId = match.params.id;
 
   const [user_name, setUsername] = useState("");
+  const [first_name, setFirstname] = useState("");
   const [email, setEmail] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -19,6 +20,8 @@ function UserEditScreen({ match, history }) {
 
   const userDetails = useSelector((state) => state.userDetails);
   const { error, loading, user } = userDetails;
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
   const userUpdate = useSelector((state) => state.userUpdate);
   const {
@@ -28,25 +31,36 @@ function UserEditScreen({ match, history }) {
   } = userUpdate;
 
   useEffect(() => {
-    if (successUpdate) {
-      dispatch({ type: USER_UPDATE_RESET });
-      history.push("/admin/users");
-    } else {
-      if (!user?.user_name || user.id !== Number(userId)) {
-        dispatch(getUserDetails(userId));
+    if (userInfo || userInfo.isAdmin) {
+      if (successUpdate) {
+        dispatch({ type: USER_UPDATE_RESET });
+        history.push("/admin/users");
       } else {
-        setUsername(user?.user_name);
-        setEmail(user.email);
-        setIsAdmin(user.isAdmin);
+        if (!user?.user_name || user.id !== Number(userId)) {
+          dispatch(getUserDetails(userId));
+        } else {
+          setFirstname(user.name);
+          setUsername(user?.user_name);
+          setEmail(user.email);
+          setIsAdmin(user.isAdmin);
+        }
       }
+    } else {
+      history.push("/login");
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, userId, successUpdate, history]);
+  }, [user, userId, successUpdate, history, userInfo, dispatch]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(updateUser({ id: user.id, user_name, email, isAdmin }));
+    dispatch(
+      updateUser({
+        id: user.id,
+        first_name: first_name,
+        user_name,
+        email,
+        isAdmin,
+      })
+    );
   };
 
   return (
@@ -81,6 +95,17 @@ function UserEditScreen({ match, history }) {
                 placeholder="Enter Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId="firstname">
+              <Form.Label>First Name</Form.Label>
+              <Form.Control
+                required
+                type="text"
+                placeholder="Enter firstname"
+                value={first_name}
+                onChange={(e) => setFirstname(e.target.value)}
               ></Form.Control>
             </Form.Group>
 

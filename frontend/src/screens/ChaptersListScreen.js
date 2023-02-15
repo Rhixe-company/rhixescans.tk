@@ -43,16 +43,15 @@ const ChaptersListScreen = ({ history }) => {
   let keyword = history.location.search;
 
   useEffect(() => {
-    dispatch({ type: CHAPTERS_CREATE_RESET });
-
-    if (!userInfo || !userInfo.isAdmin) {
-      history.push("/login");
-    }
-
-    if (successCreate) {
-      history.push(`/admin/chapter/${createdChapter.id}/edit`);
+    if (userInfo && userInfo.isAdmin) {
+      dispatch({ type: CHAPTERS_CREATE_RESET });
+      if (successCreate) {
+        history.push(`/admin/chapter/${createdChapter.id}/edit`);
+      } else {
+        dispatch(listChapters(keyword));
+      }
     } else {
-      dispatch(listChapters(keyword));
+      history.push("/login");
     }
   }, [
     dispatch,

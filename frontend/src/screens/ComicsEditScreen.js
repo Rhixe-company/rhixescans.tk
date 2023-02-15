@@ -29,6 +29,8 @@ const ComicsEditScreen = ({ match, history }) => {
   const { error, loading, comic } = useSelector((state) => state.comic);
 
   const comicUpdate = useSelector((state) => state.comicUpdate);
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
   const {
     error: errorUpdate,
     loading: loadingUpdate,
@@ -36,27 +38,31 @@ const ComicsEditScreen = ({ match, history }) => {
   } = comicUpdate;
 
   useEffect(() => {
-    if (successUpdate) {
-      dispatch({ type: COMICS_UPDATE_RESET });
-      history.push("/admin/comics");
-    } else {
-      if (!comic?.title || comic?.id !== Number(comicId)) {
-        dispatch(listComicDetails(comicId));
+    if (userInfo && userInfo.isAdmin) {
+      if (successUpdate) {
+        dispatch({ type: COMICS_UPDATE_RESET });
+        history.push("/admin/comics");
       } else {
-        setTitle(comic?.title);
-        setAlternativetitle(comic?.alternativetitle);
-        setSlug(comic?.slug);
-        setRating(comic?.rating);
-        setImage_urls(comic?.image_urls);
-        setStatus(comic?.status);
-        setAuthor(comic?.author);
-        setDescription(comic?.description);
-        setReleased(comic?.released);
-        setSerialization(comic?.serialization);
-        setArtist(comic?.artist);
+        if (!comic?.title || comic?.id !== Number(comicId)) {
+          dispatch(listComicDetails(comicId));
+        } else {
+          setTitle(comic?.title);
+          setAlternativetitle(comic?.alternativetitle);
+          setSlug(comic?.slug);
+          setRating(comic?.rating);
+          setImage_urls(comic?.image_urls);
+          setStatus(comic?.status);
+          setAuthor(comic?.author);
+          setDescription(comic?.description);
+          setReleased(comic?.released);
+          setSerialization(comic?.serialization);
+          setArtist(comic?.artist);
+        }
       }
+    } else {
+      history.push("/login");
     }
-  }, [dispatch, comic, comicId, history, successUpdate]);
+  }, [dispatch, comic, comicId, history, successUpdate, userInfo]);
 
   const submitHandler = (e) => {
     e.preventDefault();

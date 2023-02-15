@@ -39,16 +39,15 @@ const ComicsListScreen = ({ history }) => {
   let keyword = history.location.search;
 
   useEffect(() => {
-    dispatch({ type: COMICS_CREATE_RESET });
-
-    if (!userInfo || !userInfo.isAdmin) {
-      history.push("/login");
-    }
-
-    if (successCreate) {
-      history.push(`/admin/comic/${createdComic.id}/edit`);
+    if (userInfo && userInfo.isAdmin) {
+      dispatch({ type: COMICS_CREATE_RESET });
+      if (successCreate) {
+        history.push(`/admin/comic/${createdComic.id}/edit`);
+      } else {
+        dispatch(listComics(keyword));
+      }
     } else {
-      dispatch(listComics(keyword));
+      history.push("/login");
     }
   }, [
     dispatch,

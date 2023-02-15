@@ -24,19 +24,26 @@ function ChaptersEditScreen({ match, history }) {
     success: successUpdate,
   } = chapterUpdate;
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   useEffect(() => {
-    if (successUpdate) {
-      dispatch({ type: CHAPTERS_UPDATE_RESET });
-      history.push("/admin/chapters");
-    } else {
-      if (!chapter?.name || chapter?.id !== Number(chapterId)) {
-        dispatch(listChapterDetails(chapterId));
+    if (userInfo || userInfo.isAdmin) {
+      if (successUpdate) {
+        dispatch({ type: CHAPTERS_UPDATE_RESET });
+        history.push("/admin/chapters");
       } else {
-        setName(chapter?.name);
-        setPages(chapter?.pages);
+        if (!chapter?.name || chapter?.id !== Number(chapterId)) {
+          dispatch(listChapterDetails(chapterId));
+        } else {
+          setName(chapter?.name);
+          setPages(chapter?.pages);
+        }
       }
+    } else {
+      history.push("/login");
     }
-  }, [dispatch, chapter, chapterId, history, successUpdate]);
+  }, [dispatch, chapter, chapterId, history, successUpdate, userInfo]);
 
   const submitHandler = (e) => {
     e.preventDefault();

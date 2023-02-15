@@ -3,7 +3,7 @@ import { Form, Button, Row, Col, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Spinner from "../components/ui/Spinner";
 import Message from "../components/utils/Message";
-import { getUserDetails, updateUserProfile } from "../actions/userActions";
+import { getUserProfile, updateUserProfile } from "../actions/userActions";
 import { USER_UPDATE_PROFILE_RESET } from "../constants/userConstants";
 import { LinkContainer } from "react-router-bootstrap";
 import { deleteChapter } from "../actions/chaptersActions";
@@ -11,15 +11,18 @@ import { Link } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
 function ProfileScreen({ history }) {
   const [user_name, setUsername] = useState("");
+  const [first_name, setFirstname] = useState("");
+  const [about, setAbout] = useState("");
   const [email, setEmail] = useState("");
+  const [avatar, setAvatar] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
 
   const dispatch = useDispatch();
 
-  const userDetails = useSelector((state) => state.userDetails);
-  const { error, loading, user, chapters } = userDetails;
+  const userProfile = useSelector((state) => state.userProfile);
+  const { error, loading, user, chapters } = userProfile;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -30,16 +33,19 @@ function ProfileScreen({ history }) {
   const { loading: loadingDelete, error: errorDelete } = chapterDelete;
 
   useEffect(() => {
-    if (!userInfo) {
-      history.push("/login");
-    } else {
+    if (userInfo) {
       if (!user || !user.user_name || success || userInfo.id !== user.id) {
         dispatch({ type: USER_UPDATE_PROFILE_RESET });
-        dispatch(getUserDetails(userInfo.id));
+        dispatch(getUserProfile());
       } else {
+        setFirstname(user.name);
         setUsername(user.user_name);
         setEmail(user.email);
+        setAbout(user.about);
+        setAvatar(user.avatar);
       }
+    } else {
+      history.push("/login");
     }
   }, [dispatch, history, userInfo, user, success]);
 
@@ -57,10 +63,12 @@ function ProfileScreen({ history }) {
     } else {
       dispatch(
         updateUserProfile({
-          id: user.id,
+          first_name: first_name,
           user_name: user_name,
           email: email,
           password: password,
+          about: about,
+          avatar: avatar,
         })
       );
       setMessage("");
@@ -79,10 +87,10 @@ function ProfileScreen({ history }) {
         {loading && <Spinner />}
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="username">
-            <Form.Label>Name</Form.Label>
+            <Form.Label>UserName</Form.Label>
             <Form.Control
               required
-              type="username"
+              type="text"
               placeholder="Enter username"
               value={user_name}
               onChange={(e) => setUsername(e.target.value)}
@@ -97,6 +105,38 @@ function ProfileScreen({ history }) {
               placeholder="Enter Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+
+          <Form.Group controlId="firstname">
+            <Form.Label>First Name</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="Enter firstname"
+              value={first_name}
+              onChange={(e) => setFirstname(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+
+          <Form.Group controlId="about">
+            <Form.Label>About</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="Enter text"
+              value={about}
+              onChange={(e) => setAbout(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+
+          <Form.Group controlId="avatar">
+            <Form.Label>Avatar</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter image"
+              value={avatar}
+              onChange={(e) => setAvatar(e.target.value)}
             ></Form.Control>
           </Form.Group>
 
