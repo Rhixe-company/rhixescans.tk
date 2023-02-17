@@ -22,7 +22,7 @@ const ComicsCarousel = () => {
       {error && <Message variant="danger">{error}</Message>}
       <Carousel pause="hover">
         {comics?.map((comic) => (
-          <Carousel.Item interval={3000} key={comic.id}>
+          <Carousel.Item interval={5000} key={comic.id}>
             <Link to={`/comic/${comic.id}`}>
               <Image src={comic?.images} alt={comic?.images} fluid />
               <Carousel.Caption className="carousel.caption">

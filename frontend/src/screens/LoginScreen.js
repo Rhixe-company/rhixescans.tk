@@ -70,6 +70,7 @@ function LoginScreen({ location, history }) {
             New Customer?{" "}
             <Link
               to={redirect ? `/register?redirect=${redirect}` : "/register"}
+              className="text-info"
             >
               Register
             </Link>

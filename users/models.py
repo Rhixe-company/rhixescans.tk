@@ -43,7 +43,7 @@ class NewUser(AbstractBaseUser, PermissionsMixin):
     about = models.TextField(_(
         'about'), max_length=500, blank=True)
     avatar = models.ImageField(
-        upload_to='users', null=False, default='users/user.png')
+        upload_to='users', blank=True, default='users/user.png')
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 

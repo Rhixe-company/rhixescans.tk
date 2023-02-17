@@ -124,7 +124,7 @@ const ComicsListScreen = ({ history }) => {
                       </td>
                       <td>
                         <Link to={`/comic/${comic.id}/`}>
-                          <Image fluid src={comic.image} alt={comic.image} />
+                          <Image fluid src={comic.images} alt={comic.image} />
                         </Link>
                       </td>
 

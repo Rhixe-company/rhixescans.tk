@@ -25,7 +25,7 @@ function HomeScreen({ history }) {
     <div>
       {!keyword && <ComicsCarousel />}
 
-      <h1>Latest Comics</h1>
+      <br />
       {loading ? (
         <Spinner />
       ) : error ? (

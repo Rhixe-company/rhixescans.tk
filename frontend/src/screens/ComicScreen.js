@@ -8,7 +8,6 @@ import {
   Image,
   ListGroup,
   Button,
-  NavDropdown,
   Nav,
   Container,
 } from "react-bootstrap";
@@ -17,7 +16,7 @@ import Spinner from "../components/ui/Spinner";
 import Message from "../components/utils/Message";
 import { listComicDetails } from "../actions/comicsActions";
 
-import { LikeComic, addToBookmark } from "../actions/bookmarkActions";
+import { LikeComic, bookmarkComic } from "../actions/bookmarkActions";
 import {
   FaBookmark,
   FaHeart,
@@ -49,49 +48,33 @@ function ComicScreen({ match, history }) {
   } = comicBookmarkLike;
 
   useEffect(() => {
-    if (userInfo) {
-      if (successBookmark) {
-        dispatch(listComicDetails(comicId, pageNumber));
-        dispatch(listComicDetails(comicId, pageNumber));
-      } else {
-        dispatch(listComicDetails(comicId, pageNumber));
-      }
-      if (successLike) {
-        dispatch(listComicDetails(comicId, pageNumber));
-      } else {
-        dispatch(listComicDetails(comicId, pageNumber));
-      }
-    } else {
-      history.push("/login");
-    }
+    dispatch(listComicDetails(comicId, pageNumber));
   }, [
     comicId,
     dispatch,
     match,
     pageNumber,
-    successBookmark,
-    successLike,
     userInfo,
     history,
+    successBookmark,
+    successLike,
   ]);
 
   const bookmarkHandler = (e) => {
     e.preventDefault();
-    dispatch(addToBookmark(match.params.id));
+    dispatch(bookmarkComic(match.params.id));
+    dispatch(listComicDetails(comicId, pageNumber));
   };
 
   const likeHandler = (e) => {
     e.preventDefault();
     dispatch(LikeComic(match.params.id));
+    dispatch(listComicDetails(comicId, pageNumber));
   };
-  const fav = [];
-  for (let index = 0; index < comic?.favourites.length; index++) {
-    fav.push(comic.favourites[index]);
-  }
-  console.log(fav);
-
+  const fav = comic?.favourites;
+  const lik = comic?.likes;
   return (
-    <Container>
+    <React.Fragment>
       {loading && <Spinner />}
       {error && (
         <>
@@ -101,11 +84,8 @@ function ComicScreen({ match, history }) {
           </Link>
         </>
       )}
-      {loadingBookmark && <Spinner />}
-      {errorBookmark && <Message variant="danger">{errorBookmark}</Message>}
-      {loadingLike && <Spinner />}
-      {errorLike && <Message variant="danger">{errorLike}</Message>}
-      <>
+
+      <Container fluid>
         <Row>
           <Col md={6}>
             <Image
@@ -132,18 +112,19 @@ function ComicScreen({ match, history }) {
               </ListGroup.Item>
 
               <ListGroup.Item>
-                <Nav className="ml-auto">
-                  {comic?.genres?.length === 0 ? (
-                    <Message variant="info">No Genres</Message>
-                  ) : (
-                    <NavDropdown title="Genres" id="genres">
-                      {comic?.genres?.map((item) => (
-                        <LinkContainer key={item.id} to={`/genre/${item.id}`}>
-                          <NavDropdown.Item>{item.name}</NavDropdown.Item>
-                        </LinkContainer>
-                      ))}
-                    </NavDropdown>
-                  )}
+                <strong>About:</strong> {comic?.description}
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Nav className="d-flex justify-content-between align-items-center">
+                  <strong>Genres:</strong>
+                  {comic?.genres?.map((item) => (
+                    <Nav.Link key={item.id}>
+                      <LinkContainer to={`/genre/${item.id}`}>
+                        <div> {item.name}</div>
+                      </LinkContainer>
+                    </Nav.Link>
+                  ))}
                 </Nav>
               </ListGroup.Item>
 
@@ -181,42 +162,14 @@ function ComicScreen({ match, history }) {
               <ListGroup.Item>
                 <strong>Released:</strong> {comic?.released}
               </ListGroup.Item>
-              {/* 
-                <ListGroup.Item>
-                  {fav.map((index) => (
-                    <>
-                      {fav.id === index.id ? (
-                        <Button
-                          className="btn btn-danger btn-sm"
-                          onClick={bookmarkHandler}
-                        >
-                          Remove
-                          <FaUserCheck />
-                        </Button>
-                      ) : (
-                        <Button
-                          className="btn btn-default btn-sm"
-                          onClick={bookmarkHandler}
-                        >
-                          Add
-                          <FaBookmark />
-                        </Button>
-                      )}
-                    </>
-                  ))}
-                </ListGroup.Item> */}
 
               <ListGroup.Item>
-                {comic?.favourites.length > 0 ||
-                comic?.favourites?.id === userInfo.id ? (
-                  <Button
-                    className="btn btn-danger btn-sm"
-                    onClick={bookmarkHandler}
-                  >
-                    Remove
-                    <FaUserCheck />
-                  </Button>
-                ) : (
+                {loadingBookmark && <Spinner />}
+                {errorBookmark && (
+                  <Message variant="danger">{errorBookmark}</Message>
+                )}
+
+                {fav?.length === 0 && (
                   <Button
                     className="btn btn-default btn-sm"
                     onClick={bookmarkHandler}
@@ -225,27 +178,21 @@ function ComicScreen({ match, history }) {
                     <FaBookmark />
                   </Button>
                 )}
+                {fav?.length > 0 && fav?.length === 1 && (
+                  <Button
+                    className="btn btn-danger btn-sm"
+                    onClick={bookmarkHandler}
+                  >
+                    Remove
+                    <FaUserCheck />
+                  </Button>
+                )}
               </ListGroup.Item>
 
               <ListGroup.Item>
-                {comic?.likes?.length > 0 ||
-                comic?.likes?.id === userInfo.id ? (
-                  <div>
-                    <strong
-                      className="text-default text-center mb-3"
-                      id="like_count"
-                    >
-                      {comic?.likes?.length}
-                    </strong>
-                    <Button
-                      onClick={likeHandler}
-                      className="btn btn-danger btn-sm"
-                    >
-                      Unlike
-                      <FaHeartBroken />
-                    </Button>
-                  </div>
-                ) : (
+                {loadingLike && <Spinner />}
+                {errorLike && <Message variant="danger">{errorLike}</Message>}
+                {lik?.length === 0 && (
                   <div>
                     <strong
                       className="text-default text-center mb-3"
@@ -262,6 +209,23 @@ function ComicScreen({ match, history }) {
                     </Button>
                   </div>
                 )}
+                {lik?.length > 0 && lik?.length === 1 && (
+                  <div>
+                    <strong
+                      className="text-default text-center mb-3"
+                      id="like_count"
+                    >
+                      {comic?.likes?.length}
+                    </strong>
+                    <Button
+                      onClick={likeHandler}
+                      className="btn btn-danger btn-sm"
+                    >
+                      Unlike
+                      <FaHeartBroken />
+                    </Button>
+                  </div>
+                )}
               </ListGroup.Item>
             </ListGroup>
           </Col>
@@ -270,9 +234,10 @@ function ComicScreen({ match, history }) {
         <Row>
           <Col md={6}>
             <h4>Chapters</h4>
-            {chapters?.length === 0 && (
-              <Message variant="info">No Reviews</Message>
-            )}
+            {chapters?.length === 0 &&
+              comic?.numChapters === chapters?.length && (
+                <Message variant="info">No Chapters</Message>
+              )}
 
             <ListGroup variant="flush">
               {chapters?.map((chapter) => (
@@ -285,8 +250,8 @@ function ComicScreen({ match, history }) {
             </ListGroup>
           </Col>
         </Row>
-      </>
-    </Container>
+      </Container>
+    </React.Fragment>
   );
 }
 

@@ -153,7 +153,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'frontend/build/static'
 ]
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -200,9 +200,9 @@ SIMPLE_JWT = {
     'TOKEN_TYPE_CLAIM': 'token_type',
     'JTI_CLAIM': 'jti',
 
-    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(hours=720),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=360),
+    # 'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    # 'SLIDING_TOKEN_LIFETIME': timedelta(hours=720),
+    # 'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=360),
 }
 
 # # Email Config

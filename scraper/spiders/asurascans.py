@@ -64,39 +64,39 @@ class AsurascansSpider(scrapy.Spider):
         # for link in response.css('ul.clstyle li a::attr(href)'):
         #     yield response.follow(link.get(), callback=self.parse_chapters)
 
-        chapter_page = response.css('ul.clstyle li a::attr(href)').get()
-        yield response.follow(chapter_page, callback=self.parse_chapters)
+    #     chapter_page = response.css('ul.clstyle li a::attr(href)').get()
+    #     yield response.follow(chapter_page, callback=self.parse_chapters)
 
-    async def parse_chapters(self, response):
-        slug = response.css('.allc a::attr(href)').get().split("/")[-2]
-        title = response.css(".allc a::text").get().strip()
-        name = response.css('.entry-title::text').get().strip()
-        pages = response.css('.rdminimal img::attr(src)').getall()
-        for img_url in pages:
-            comic = ComicsManager.objects.filter(
-                Q(title__icontains=title) |
-                Q(slug__icontains=slug)).get(title=title)
-            if comic:
-                obj, created = Chapter.objects.filter(
-                    Q(name__icontains=name)
-                ).get_or_create(comic=comic, name=name, defaults={'name': name, 'comic': comic})
-                obj1, created = Page.objects.filter(
-                    Q(image_urls__icontains=img_url)
-                ).get_or_create(image_urls=img_url, chapter=obj, defaults={'image_urls': img_url})
-                obj.pages.add(obj1)
-                obj.numPages = obj.page_set.all().count()
+    # async def parse_chapters(self, response):
+    #     slug = response.css('.allc a::attr(href)').get().split("/")[-2]
+    #     title = response.css(".allc a::text").get().strip()
+    #     name = response.css('.entry-title::text').get().strip()
+    #     pages = response.css('.rdminimal img::attr(src)').getall()
+    #     for img_url in pages:
+    #         comic = ComicsManager.objects.filter(
+    #             Q(title__icontains=title) |
+    #             Q(slug__icontains=slug)).get(title=title)
+    #         if comic:
+    #             obj, created = Chapter.objects.filter(
+    #                 Q(name__icontains=name)
+    #             ).get_or_create(comic=comic, name=name, defaults={'name': name, 'comic': comic})
+    #             obj1, created = Page.objects.filter(
+    #                 Q(image_urls__icontains=img_url)
+    #             ).get_or_create(image_urls=img_url, chapter=obj, defaults={'image_urls': img_url})
+    #             obj.pages.add(obj1)
+    #             obj.numPages = obj.page_set.all().count()
 
-                obj.save()
-                obj.comic.save()
-                comic.numChapters = comic.chapter_set.all().count()
-                comic.save()
-                yield {
-                    'comic': comic,
-                    'chapter': obj,
-                    'page': obj1,
-                }
-            else:
+    #             obj.save()
+    #             obj.comic.save()
+    #             comic.numChapters = comic.chapter_set.all().count()
+    #             comic.save()
+    #             yield {
+    #                 'comic': comic,
+    #                 'chapter': obj,
+    #                 'page': obj1,
+    #             }
+    #         else:
 
-                print(f'{title} not found in database')
+    #             print(f'{title} not found in database')
 
-        pass
+    #     pass

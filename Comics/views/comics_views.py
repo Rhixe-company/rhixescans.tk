@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from rest_framework import status, permissions
 from Comics.models import Comic, Chapter, Page, Categorys, Genre, Review, ComicsManager
-from Comics.serializers import ComicSerializer, ChapterSerializer, GenreSerializer, CategorysSerializer, ReviewSerializer
+from Comics.serializers import ComicSerializer, ChapterSerializer, GenreSerializer, CategorysSerializer, ReviewSerializer, PageSerializer
 from django.db.models import Q
 
 from bs4 import BeautifulSoup
@@ -215,10 +215,12 @@ def getChapter(request, pk):
     comicId = chapter.comic
     comic = Comic.objects.get(title=comicId)
     chapters = chapter.comic.chapter_set.all().order_by('-name')
+    pages = chapter.pages.all()
     serializer = ChapterSerializer(chapter, many=False)
     serializer1 = ComicSerializer(comic, many=False)
     serializer2 = ChapterSerializer(chapters, many=True)
-    return Response({'chapters': serializer2.data, 'comic': serializer1.data, 'chapter': serializer.data, })
+    serializer3 = PageSerializer(pages, many=True)
+    return Response({'chapter': serializer.data, 'images': serializer3.data, 'comic': serializer1.data, 'chapters': serializer2.data, })
 
 
 @api_view(['POST'])
@@ -346,6 +348,7 @@ def createChapterReview(request, pk):
         chapter.comic.user = user
         reviews = chapter.comments.all()
         chapter.numReviews = len(reviews)
+        chapter.comic.numReviews = len(reviews)
         total = 0
         for i in reviews:
             total += i.rating

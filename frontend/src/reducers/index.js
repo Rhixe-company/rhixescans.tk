@@ -21,11 +21,11 @@ import {
   userLoginReducer,
   userRegisterReducer,
   userDetailsReducer,
-  userDetails1Reducer,
   userUpdateProfileReducer,
   userListReducer,
   userDeleteReducer,
   userUpdateReducer,
+  userProfileReducer,
 } from "./userReducers";
 import { genreDetailsReducer, genresListReducer } from "./genresReducers";
 
@@ -33,6 +33,7 @@ import {
   comicBookmarkLikeReducer,
   comicBookmarkListReducer,
   comicBookmarkReducer,
+  bookmarkReducer,
 } from "./bookmarkReducers";
 
 import {
@@ -44,7 +45,7 @@ const reducer = combineReducers({
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,
-  userDetails1: userDetails1Reducer,
+  userProfile: userProfileReducer,
   userUpdateProfile: userUpdateProfileReducer,
   userList: userListReducer,
   userDelete: userDeleteReducer,
@@ -69,6 +70,6 @@ const reducer = combineReducers({
   chapterUpdate: chapterUpdateReducer,
   chaptersTopRatedReducer: chaptersTopRatedReducer,
   chapterReviewCreate: chapterReviewCreateReducer,
+  bookmark: bookmarkReducer,
 });
-
 export default reducer;

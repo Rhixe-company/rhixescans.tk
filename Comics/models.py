@@ -6,6 +6,15 @@ from django.utils.translation import gettext_lazy as _
 from io import BytesIO
 from django.core import files
 from requests_html import HTMLSession
+# from django.db.models.signals import post_save
+# from django.contrib.auth.models import User
+# from django.dispatch import receiver
+# from django.core.exceptions import ValidationError
+# from django.core.files.images import get_image_dimensions
+
+
+# def user_directory_path(instance, filename):
+#     return 'users/avatars/{0}/{1}'.format(instance.user.id, filename)
 
 
 def comics_images_location(instance, filename):
@@ -16,10 +25,30 @@ def comics_chapters_images_location(instance, filename):
     return '{}/{}/{}'.format(str(instance.chapter.comic.title).replace(" ", "_").replace(":", " ").replace("/", "").replace("\\", ""),  instance.chapter.name, filename)
 
 
-s = HTMLSession()
-headers = {
-    'User-Agent': "Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0"
-}
+# class Profile(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     avatar = models.ImageField(
+#         upload_to=user_directory_path, default='users/avatar.jpg')
+#     bio = models.TextField(max_length=500, blank=True)
+
+#     def clean(self):
+#         if not self.avatar:
+#             raise ValidationError("x")
+#         else:
+#             w, h = get_image_dimensions(self.avatar)
+#             if w != 500:
+#                 raise ValidationError("x")
+#             if h != 500:
+#                 raise ValidationError("x")
+
+#     def __str__(self):
+#         return self.user.username
+
+
+# @ receiver(post_save, sender=User)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance)
 
 
 class Genre(models.Model):
@@ -54,7 +83,7 @@ class Comic(models.Model):
     #    upload_to=None, max_length=100000, default='placeholder.png', height_field=None, width_field=None)
     image_urls = models.URLField(max_length=100000, unique=True, null=True)
     images = models.ImageField(
-        upload_to=comics_images_location, max_length=100000, null=False, height_field=None, width_field=None)
+        _('Images'), blank=True, null=True, max_length=100000, upload_to=comics_images_location)
     rating = models.DecimalField(max_digits=9, decimal_places=1, blank=True)
     status = models.CharField(
         max_length=15, choices=options, default='Ongoing')
@@ -86,7 +115,10 @@ class Comic(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-
+        s = HTMLSession()
+        headers = {
+            'User-Agent': "Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0"
+        }
         if self.images == '' and self.image_urls != '':
             resp = s.get(self.image_urls,  stream=True, headers=headers)
             pb = BytesIO()
@@ -142,9 +174,9 @@ class Chapter(models.Model):
 
 class Page(models.Model):
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE)
-    image_urls = models.URLField(max_length=100000,  null=False, blank=False)
-    images = models.ImageField(upload_to=comics_chapters_images_location, null=False, blank=True,
-                               max_length=100000, height_field=None, width_field=None)
+    image_urls = models.URLField(max_length=100000, unique=True, null=True)
+    images = models.ImageField(
+        _('Images'), blank=True, null=True, max_length=100000, upload_to=comics_chapters_images_location)
     # images = models.ImageField(
     #    upload_to=None, max_length=100000, height_field=None, width_field=None, null=True, blank=False)
 
@@ -152,7 +184,10 @@ class Page(models.Model):
         return self.image_urls
 
     def save(self, *args, **kwargs):
-
+        s = HTMLSession()
+        headers = {
+            'User-Agent': "Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0"
+        }
         if self.images == '' and self.image_urls != '':
             resp = s.get(self.image_urls,  stream=True, headers=headers)
             pb = BytesIO()

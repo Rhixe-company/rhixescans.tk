@@ -9,7 +9,7 @@ function Paginate({ pages, page, keyword = "", isAdmin = false }) {
 
   return (
     pages > 1 && (
-      <Pagination size="sm">
+      <Pagination size="md">
         {[...Array(pages).keys()].map((x) => (
           <LinkContainer
             key={x + 1}

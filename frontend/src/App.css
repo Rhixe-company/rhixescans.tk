@@ -1,10 +1,6 @@
 .App {
-
   color: white;
-
   font-family: 'Playfair', source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-  align-items: center;
-  justify-content: space-around;
 }
 
 .App-logo {
@@ -19,11 +15,10 @@
 }
 
 .App-header {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-
-  color: white;
+  font-size: 1.0rem;
+  color: #fff;
+  padding: 0;
+  margin: 0;
 }
 
 
@@ -38,22 +33,36 @@
 }
 
 main {
-  min-height: 80vh;
+  min-height: 100vh;
+  align-items: flex-end;
+  justify-content: space-around;
 }
 
 h1 {
   font-size: 1.8rem;
   color: #fff;
-  padding: 0;
+  padding: 10px;
 }
 
 h2 {
   font-size: 1.4rem;
-  padding: 0;
+  padding: 10px;
 }
 
 h3 {
   font-size: 1.2rem;
+  color: #333;
+  padding: 10px;
+
+}
+
+h4,
+h5,
+span,
+p,
+b,
+small {
+  font-size: 0.8rem;
   color: #333;
   padding: 0;
 }
@@ -70,7 +79,11 @@ li {
 
 a {
   text-decoration: none;
-  color: transparent;
+  color: #333;
+}
+
+a:hover {
+  color: blueviolet;
 }
 
 .rating span {
@@ -108,14 +121,18 @@ a {
   margin: 0 auto;
 }
 
-.pages {
-  min-width: 80vw;
-  justify-content: space-around;
+.images {
+
+  max-width: 100%;
+
+
 }
 
-.pages img {
-  display: block;
+.single-photo {
+  max-width: 100%;
   width: 100%;
+
+
 }
 
 @media (max-width: 900px) {
