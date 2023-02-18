@@ -1,0 +1,151 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair:wght@400;700&display=swap");
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Playfair', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #fff;
+    background: rgb(39, 36, 36);
+}
+
+img {
+    max-width: 100%;
+}
+
+h1,
+h2 {
+    margin-bottom: 8px;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 30px;
+}
+
+.navbar {
+    background: rgb(60, 57, 57);
+    color: #fff;
+    height: auto;
+}
+
+
+.navbar a {
+    text-decoration: none;
+
+}
+
+.navbar a:hover {
+    color: coral;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+
+
+
+.boxes .container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.box {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    background-color: rgba(16, 71, 44, 0.067);
+    color: #fff;
+    border-radius: 10px;
+    margin: 20px 10px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.6);
+    padding: 15px 20px;
+}
+
+.box i {
+    margin-right: 10px;
+}
+
+
+.box a {
+    text-decoration: none;
+    color: #000;
+}
+
+.box img {
+    width: 200px;
+    height: 250px;
+    border-radius: 10px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.6);
+}
+
+/* carousel */
+.carousel-item-next,
+.carousel-item-prev,
+.carousel-item.active {
+    display: flex;
+}
+
+.carousel-caption {
+    position: absolute;
+    top: 0;
+
+}
+
+.carousel-caption h2 {
+    color: #fff;
+
+}
+
+.carousel img {
+    display: block;
+    height: 400px;
+    padding: 40px;
+    margin: 50px;
+    border-radius: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.carousel a {
+    margin: 0 auto;
+}
+
+/* scroll up*/
+#btn-back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+}
+
+@media (max-width: 900px) {
+    .header .container {
+        flex-direction: column;
+        padding-top: 10px;
+        text-align: center;
+    }
+
+    .boxes .container {
+        display: block;
+        text-align: center;
+    }
+
+    .carousel-caption h2 {
+        font-size: 2.5vw;
+    }
+}

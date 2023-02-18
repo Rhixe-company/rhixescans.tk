@@ -1,9 +1,8 @@
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import *
-from rest_framework.permissions import AllowAny
 from .models import *
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import api_view, permission_classes
@@ -15,7 +14,6 @@ from Comics.serializers import *
 
 
 class BlacklistTokenUpdateView(APIView):
-    permission_classes = [AllowAny]
     authentication_classes = ()
 
     def post(self, request):
@@ -32,18 +30,22 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
+class RefreshTokenObtainPairView(TokenRefreshView):
+    serializer_class = RefreshTokenObtainPairSerializer
+
+
 @api_view(['POST'])
 def registerUser(request):
     data = request.data
     try:
         user = NewUser.objects.create(
-            first_name=data['first_name'],
+            # first_name=data['first_name'],
             user_name=data['user_name'],
             email=data['email'],
             password=make_password(data['password'])
         )
 
-        serializer = UserSerializerWithToken(user, many=False)
+        serializer = UserSerializer(user, many=False)
         return Response(serializer.data)
     except:
         message = {'detail': 'User with this email already exists'}
@@ -57,11 +59,11 @@ def updateUserProfile(request):
     serializer = UserSerializer(user, many=False)
 
     data = request.data
-    user.first_name = data['first_name']
+    # user.first_name = data['first_name']
     user.user_name = data['user_name']
     user.email = data['email']
-    user.about = data['about']
-    user.avatar = data['avatar']
+    # user.about = data['about']
+    # user.avatar = data['avatar']
 
     if data['password'] != '':
         user.password = make_password(data['password'])
@@ -94,21 +96,17 @@ def getUsers(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAdminUser])
 def getUserById(request, pk):
     user = NewUser.objects.get(id=pk)
-    chapters = user.chapter_set.all()
+
     serializer = UserSerializer(user, many=False)
-    serializer1 = ChapterSerializer(chapters, many=True)
-    context = {
-        'user': serializer.data,
-        'chapters': serializer1.data,
-    }
-    return Response(context)
+
+    return Response(serializer.data)
 
 
 @api_view(['PUT'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAdminUser])
 def updateUser(request, pk):
     user = NewUser.objects.get(id=pk)
 
@@ -116,7 +114,7 @@ def updateUser(request, pk):
 
     # user.first_name = data['first_name']
     user.user_name = data['user_name']
-    user.first_name = data['first_name']
+    # user.first_name = data['first_name']
     user.email = data['email']
     user.is_staff = data['isAdmin']
 

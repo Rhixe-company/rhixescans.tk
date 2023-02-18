@@ -1,6 +1,6 @@
 from django.db import models
 from .managers import NewManager
-from users.models import NewUser
+from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from io import BytesIO
@@ -15,6 +15,7 @@ from requests_html import HTMLSession
 
 # def user_directory_path(instance, filename):
 #     return 'users/avatars/{0}/{1}'.format(instance.user.id, filename)
+s = HTMLSession()
 
 
 def comics_images_location(instance, filename):
@@ -81,9 +82,9 @@ class Comic(models.Model):
     description = models.TextField(blank=True, null=True)
     # image = models.ImageField(
     #    upload_to=None, max_length=100000, default='placeholder.png', height_field=None, width_field=None)
-    image_urls = models.URLField(max_length=100000, unique=True, null=True)
+    image_urls = models.URLField(max_length=100000)
     images = models.ImageField(
-        _('Images'), blank=True, null=True, max_length=100000, upload_to=comics_images_location)
+        max_length=100000, upload_to=comics_images_location)
     rating = models.DecimalField(max_digits=9, decimal_places=1, blank=True)
     status = models.CharField(
         max_length=15, choices=options, default='Ongoing')
@@ -98,28 +99,31 @@ class Comic(models.Model):
     #     Categorys, on_delete=models.SET_NULL, null=True, blank='False')
     genres = models.ManyToManyField(Genre)
     category = models.ManyToManyField(Categorys)
+    created_by = models.CharField(max_length=100, blank=True, null=True)
+
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(default=timezone.now)
     favourites = models.ManyToManyField(
-        NewUser, related_name='favourite', blank=True,  default=None)
+        settings.AUTH_USER_MODEL, related_name='favourite', blank=True,  default=None)
     likes = models.ManyToManyField(
-        NewUser, related_name='like', default=None, blank=True)
+        settings.AUTH_USER_MODEL, related_name='like', default=None, blank=True)
     like_count = models.BigIntegerField(default=0, blank=True)
     objects = models.Manager()  # default manager
     newmanager = NewManager()
 
-    class Meta:
-        ordering = ('updated', 'created', 'title')
+    # class Meta:
+    #     ordering = ('-updated',)
 
     def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):
-        s = HTMLSession()
-        headers = {
-            'User-Agent': "Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0"
-        }
+
         if self.images == '' and self.image_urls != '':
+
+            headers = {
+                'User-Agent': "Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0"
+            }
             resp = s.get(self.image_urls,  stream=True, headers=headers)
             pb = BytesIO()
             pb.write(resp.content)
@@ -152,9 +156,10 @@ class ComicsManager(Comic, ExtraManagers):
 
 
 class Chapter(models.Model):
-    user = models.ForeignKey(NewUser, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.SET_NULL, null=True)
     readers = models.ManyToManyField(
-        NewUser, blank=True, related_name='reader')
+        settings.AUTH_USER_MODEL, blank=True, related_name='reader')
     comic = models.ForeignKey(Comic, on_delete=models.CASCADE)
     name = models.CharField(max_length=1000, unique=True, null=True)
     pages = models.ManyToManyField('Page', blank=True, related_name='pages')
@@ -166,7 +171,7 @@ class Chapter(models.Model):
     created = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        ordering = ('-name',)
+        ordering = ('-updated',)
 
     def __str__(self):
         return self.name
@@ -174,9 +179,9 @@ class Chapter(models.Model):
 
 class Page(models.Model):
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE)
-    image_urls = models.URLField(max_length=100000, unique=True, null=True)
+    image_urls = models.URLField(max_length=100000)
     images = models.ImageField(
-        _('Images'), blank=True, null=True, max_length=100000, upload_to=comics_chapters_images_location)
+        max_length=100000, upload_to=comics_chapters_images_location)
     # images = models.ImageField(
     #    upload_to=None, max_length=100000, height_field=None, width_field=None, null=True, blank=False)
 
@@ -184,11 +189,11 @@ class Page(models.Model):
         return self.image_urls
 
     def save(self, *args, **kwargs):
-        s = HTMLSession()
-        headers = {
-            'User-Agent': "Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0"
-        }
         if self.images == '' and self.image_urls != '':
+
+            headers = {
+                'User-Agent': "Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0"
+            }
             resp = s.get(self.image_urls,  stream=True, headers=headers)
             pb = BytesIO()
             pb.write(resp.content)
@@ -212,7 +217,8 @@ class Review(models.Model):
                (8, '8 - Very Good'),
                (9, '9 - Perfect'),
                (10, '10 - Master Piece'),)
-    user = models.ForeignKey(NewUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
     chapter = models.ForeignKey(
         Chapter, on_delete=models.SET_NULL, null=True, related_name='comments')
     comic = models.ForeignKey(Comic, on_delete=models.SET_NULL, null=True)
@@ -231,7 +237,7 @@ class Review(models.Model):
 
 class Likes(models.Model):
     user = models.ForeignKey(
-        NewUser, on_delete=models.CASCADE, related_name='user_like')
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_like')
     review = models.ForeignKey(
         Review, on_delete=models.CASCADE, related_name='review_like')
     likes = models.PositiveIntegerField(default=0)

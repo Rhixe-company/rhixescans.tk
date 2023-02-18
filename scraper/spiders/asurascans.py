@@ -45,21 +45,19 @@ class AsurascansSpider(scrapy.Spider):
         ).get_or_create(
             name=category, defaults={'name': category})
         obj.category.add(obj2)
-        genres_list = response.css('.mgen a::text').getall()
-        for genre in genres_list:
+        for genre in response.css('.mgen a::text').getall():
             obj1, created = Genre.objects.filter(
                 Q(name__icontains=genre)
             ).get_or_create(
                 name=genre, defaults={'name': genre})
-
             obj.genres.add(obj1)
             obj.save()
-        yield {
+            yield {
 
-            'comic': obj,
-            'category': obj2,
-            'genres': obj1
-        }
+                'comic': obj,
+                'category': obj2,
+                'genres': obj1
+            }
 
         # for link in response.css('ul.clstyle li a::attr(href)'):
         #     yield response.follow(link.get(), callback=self.parse_chapters)

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from users.models import NewUser
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -49,11 +49,22 @@ class UserSerializerWithToken(UserSerializer):
         return str(token.access_token)
 
 
+class RefreshTokenObtainPairSerializer(TokenRefreshSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        serializer = UserSerializer().data
+        for k, v in serializer.items():
+            data[k] = v
+
+        return data
+
+
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
 
-        serializer = UserSerializerWithToken(self.user).data
+        serializer = UserSerializer(self.user).data
         for k, v in serializer.items():
             data[k] = v
 

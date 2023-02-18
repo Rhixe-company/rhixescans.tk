@@ -7,6 +7,8 @@ app_name = 'users'
 urlpatterns = [
     path('login/', views.MyTokenObtainPairView.as_view(),
          name='token_obtain_pair'),
+    path('login/refresh/', views.RefreshTokenObtainPairView.as_view(),
+         name='refresh_token_obtain_pair'),
     path('create/', views.registerUser, name='register'),
     path('', views.getUsers, name="users"),
     path('profile/', views.getUserProfile, name="users-profile"),

@@ -7,10 +7,9 @@
 
 # testing
 /coverage
-static/media/
+/media/
 # production
 /frontend/build
-/static/media/
 /env/
 /db/
 /docs/

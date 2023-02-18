@@ -1,60 +1,60 @@
 import React, { Component, Fragment } from "react";
 import { HashRouter as Router, Route } from "react-router-dom";
-import { Container } from "react-bootstrap";
-import Header from "./components/ui/Header";
-import Footer from "./components/ui/Footer";
-import HomeScreen from "./screens/HomeScreen";
-import SeriesScreen from "./screens/SeriesScreen";
-import ComicScreen from "./screens/ComicScreen";
-import ChapterScreen from "./screens/ChapterScreen";
-import LoginScreen from "./screens/LoginScreen";
-import RegisterScreen from "./screens/RegisterScreen";
-import ProfileScreen from "./screens/ProfileScreen";
-import UserListScreen from "./screens/UserListScreen";
-import UserEditScreen from "./screens/UserEditScreen";
-import ComicsListScreen from "./screens/ComicsListScreen";
-import ComicsEditScreen from "./screens/ComicsEditScreen";
-import ChaptersListScreen from "./screens/ChaptersListScreen";
-import ChaptersEditScreen from "./screens/ChaptersEditScreen";
-import BookmarksScreen from "./screens/BookmarksScreen";
-import CategoryScreens from "./screens/CategoryScreens";
-import GenreScreens from "./screens/GenreScreens";
+import Home from "./views/Home";
+import Header from "./components/header";
+import Footer from "./components/footer";
+import Register from "./components/auth/register";
+import Login from "./components/auth/login";
+import Logout from "./components/auth/logout";
+import Single from "./views/single";
+import Search from "./views/search";
+import Admin from "./views/Admin";
+import Create from "./components/comics/create";
+import Edit from "./components/comics/edit";
+import Delete from "./components/comics/delete";
+import UserList from "./views/UserList";
+import UserEdit from "./views/UserEdit";
+import Profile from "./views/Profile";
+import Page from "./views/Page";
+import Blog from "./Blog/Blog";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import Container from "@mui/material/Container";
 
 export class App extends Component {
   render() {
+    const theme = createTheme();
+
     return (
-      <Router>
-        <Container className="App" fluid>
-          <Header />
-          <main className="py-3">
-            <Fragment>
-              <Route path="/" component={HomeScreen} exact />
-              <Route path="/series" component={SeriesScreen} />
-              <Route path="/chapter/:id" component={ChapterScreen} />
-              <Route path="/comic/:id" component={ComicScreen} />
-              <Route path="/login" component={LoginScreen} />
-              <Route path="/register" component={RegisterScreen} />
-              <Route path="/profile" component={ProfileScreen} />
-              <Route path="/category/:id/" component={CategoryScreens} />
-              <Route path="/genre/:id/" component={GenreScreens} />
-              <Route path="/bookmarks" component={BookmarksScreen} />
-              <Route path="/admin/users" component={UserListScreen} />
-              <Route path="/admin/user/:id/edit" component={UserEditScreen} />
-              <Route path="/admin/comics" component={ComicsListScreen} />
-              <Route
-                path="/admin/comic/:id/edit"
-                component={ComicsEditScreen}
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Fragment>
+          <Router>
+            <Container maxWidth="lg">
+              <Header title="Blog" />
+              <Route exact path="/" component={Blog} />
+              <Route exact path="/blog" component={Home} />
+              <Route exact path="/admin/comics/" component={Admin} />
+              <Route exact path="/admin/comics/create" component={Create} />
+              <Route exact path="/admin/comic/edit/:id" component={Edit} />
+              <Route exact path="/admin/comics/delete/:id" component={Delete} />
+              <Route path="/register" component={Register} />
+              <Route path="/login" component={Login} />
+              <Route path="/logout" component={Logout} />
+              <Route path="/comic/:slug" component={Single} />
+              <Route path="/chapter/:name" component={Page} />
+              <Route path="/search" component={Search} />
+              <Route path="/admin/users" component={UserList} />
+              <Route path="/admin/user/:id/edit" component={UserEdit} />
+              <Route path="/profile" component={Profile} />
+              <Footer
+                title="Read Free"
+                description="Manhwa And Manhua Comics!"
               />
-              <Route path="/admin/chapters" component={ChaptersListScreen} />
-              <Route
-                path="/admin/chapter/:id/edit"
-                component={ChaptersEditScreen}
-              />
-            </Fragment>
-          </main>
-          <Footer />
-        </Container>
-      </Router>
+            </Container>
+          </Router>
+        </Fragment>
+      </ThemeProvider>
     );
   }
 }

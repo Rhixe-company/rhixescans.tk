@@ -31,10 +31,7 @@ export const comicsListReducer = (state = {}, action) => {
       return {
         ...state,
         loading: false,
-        comics: action.payload.comics,
-        comics_count: action.payload.comics_count,
-        page: action.payload.page,
-        pages: action.payload.pages,
+        comics: action.payload,
       };
 
     case COMICS_LIST_FAIL:
@@ -54,9 +51,8 @@ export const comicDetailsReducer = (state = {}, action) => {
       return {
         ...state,
         loading: false,
-        comic: action.payload.comic,
+        comic: action.payload,
         chapters: action.payload.chapters,
-        
       };
 
     case COMICS_DETAILS_FAIL:

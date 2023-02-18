@@ -1,4 +1,5 @@
-import axios from "axios";
+import axiosInstance from "../axios";
+
 import {
   COMICS_LIST_REQUEST,
   COMICS_LIST_SUCCESS,
@@ -21,56 +22,65 @@ import {
 } from "../constants/comicsConstants";
 import { logout } from "./userActions";
 
-export const listComics =
-  (keyword = "") =>
-  async (dispatch) => {
-    try {
-      dispatch({ type: COMICS_LIST_REQUEST });
+export const listComics = () => async (dispatch) => {
+  try {
+    dispatch({ type: COMICS_LIST_REQUEST });
 
-      const { data } = await axios.get(`/api/comics/${keyword}`);
-
-      dispatch({
-        type: COMICS_LIST_SUCCESS,
-        payload: data,
-      });
-    } catch (error) {
-      dispatch({
-        type: COMICS_LIST_FAIL,
-        payload:
-          error.response && error.response.data.detail
-            ? error.response.data.detail
-            : error.message,
-      });
+    const { data } = await axiosInstance.get("/comics/");
+    dispatch({
+      type: COMICS_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
     }
-  };
+    dispatch({
+      type: COMICS_LIST_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
-export const listComicDetails =
-  (id, pageNumber = "") =>
-  async (dispatch) => {
-    try {
-      dispatch({ type: COMICS_DETAILS_REQUEST });
+export const listComicDetails = (slug) => async (dispatch) => {
+  try {
+    dispatch({ type: COMICS_DETAILS_REQUEST });
 
-      const { data } = await axios.get(`/api/comics/${id}/${pageNumber}`);
+    const { data } = await axiosInstance.get(`/comic/${slug}/`);
 
-      dispatch({
-        type: COMICS_DETAILS_SUCCESS,
-        payload: data,
-      });
-    } catch (error) {
-      dispatch({
-        type: COMICS_DETAILS_FAIL,
-        payload:
-          error.response && error.response.data.detail
-            ? error.response.data.detail
-            : error.message,
-      });
+    dispatch({
+      type: COMICS_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
     }
-  };
+    dispatch({
+      type: COMICS_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const listTopComics = () => async (dispatch) => {
   try {
     dispatch({ type: COMICS_TOP_REQUEST });
-    const { data } = await axios.get(`/api/comics/top/`);
+    const { data } = await axiosInstance.get(`/comics/top/`);
 
     dispatch({
       type: COMICS_TOP_SUCCESS,
@@ -87,24 +97,13 @@ export const listTopComics = () => async (dispatch) => {
   }
 };
 
-export const deleteComic = (id) => async (dispatch, getState) => {
+export const deleteComic = (id) => async (dispatch) => {
   try {
     dispatch({
       type: COMICS_DELETE_REQUEST,
     });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
-
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${userInfo.access}`,
-      },
-    };
-
-    const { data } = await axios.delete(`/api/comics/delete/${id}/`, config);
+    const { data } = await axiosInstance.delete(`/comics/delete/${id}/`);
     console.log(data);
     dispatch({
       type: COMICS_DELETE_SUCCESS,
@@ -124,24 +123,13 @@ export const deleteComic = (id) => async (dispatch, getState) => {
   }
 };
 
-export const createComic = () => async (dispatch, getState) => {
+export const createComic = () => async (dispatch) => {
   try {
     dispatch({
       type: COMICS_CREATE_REQUEST,
     });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
-
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${userInfo.access}`,
-      },
-    };
-
-    const { data } = await axios.post(`/api/comics/create/`, {}, config);
+    const { data } = await axiosInstance.post(`/comics/create/`, {});
     dispatch({
       type: COMICS_CREATE_SUCCESS,
       payload: data,
@@ -161,27 +149,15 @@ export const createComic = () => async (dispatch, getState) => {
   }
 };
 
-export const updateComic = (comic) => async (dispatch, getState) => {
+export const updateComic = (comic) => async (dispatch) => {
   try {
     dispatch({
       type: COMICS_UPDATE_REQUEST,
     });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
-
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${userInfo.access}`,
-      },
-    };
-
-    const { data } = await axios.put(
-      `/api/comics/update/${comic.id}/`,
-      comic,
-      config
+    const { data } = await axiosInstance.put(
+      `/comics/update/${comic.id}/`,
+      comic
     );
     dispatch({
       type: COMICS_UPDATE_SUCCESS,

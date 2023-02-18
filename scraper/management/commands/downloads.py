@@ -3,7 +3,8 @@ from scrapy.crawler import CrawlerProcess
 from scrapy.settings import Settings
 from scrapy.utils.log import configure_logging
 from scraper import settings as my_settings
-from scraper.spiders.asurascans import AsurascansSpider
+from scraper.spiders.comics import ComicsSpider
+
 
 class Command(BaseCommand):
     help = 'Release spider'
@@ -15,5 +16,5 @@ class Command(BaseCommand):
 
         process = CrawlerProcess(settings=crawler_settings)
 
-        process.crawl(AsurascansSpider)
+        process.crawl(ComicsSpider)
         process.start()
