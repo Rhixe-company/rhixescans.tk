@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-*6a(y4z02c+z9^hb)itp*l^@me25z-7(&ipkb5&n72c%o$6h3n
 # SECRET_KEY = os.getenv(
 #     'SECRET', 'django-insecure-*6a(y4z02c+z9^hb)itp*l^@me25z-7(&ipkb5&n72c%o$6h3n')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # ALLOWED_HOSTS = ['*']
 
@@ -148,14 +148,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
     #BASE_DIR / 'static',
-    BASE_DIR / 'frontend/build/static'
+    BASE_DIR / 'frontend/build/static/'
 ]
 
 MEDIA_ROOT = BASE_DIR / 'media'
-STATIC_ROOT = BASE_DIR / 'static'
+# STATIC_ROOT = BASE_DIR / 'static'
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
@@ -164,8 +164,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_SCHEMA_CLASS': ('rest_framework.schemas.coreapi.AutoSchema'),
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    # 'PAGE_SIZE': 24
+    'DEFAULT_PAGINATION_CLASS': 'Comics.pagination.CustomPagination',
+    'PAGE_SIZE': 24
 }
 
 # Permissions:
@@ -201,11 +201,11 @@ SIMPLE_JWT = {
 }
 
 # # Email Config
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = os.environ.get('HOST')
-# EMAIL_HOST_USER = os.environ.get('HOST_USER')
-# EMAIL_HOST_PASSWORD = os.environ.get('HOST_PASSWORD')
-# EMAIL_PORT = os.environ.get('PORT')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.environ.get('HOST')
+EMAIL_HOST_USER = os.environ.get('HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('HOST_PASSWORD')
+EMAIL_PORT = os.environ.get('PORT')
 
 # AWS_QUERYSTRING_AUTH = False
 # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

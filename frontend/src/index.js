@@ -1,14 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import "bootstrap/scss/bootstrap.scss";
+import "bootstrap/dist/js/bootstrap.js";
+
 // import * as serviceWorker from "./serviceWorker";
 
 import { Provider } from "react-redux";
 import store from "./store";
 import App from "./App";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.js";
-import "./index.css";
-import "./App.css";
+
+// import "./css/main.css";
+// import "./App.css";
+
+// import "./index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

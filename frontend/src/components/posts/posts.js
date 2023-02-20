@@ -54,7 +54,7 @@ const Posts = (props) => {
                     {" "}
                     <CardMedia
                       className={classes.cardMedia}
-                      image={post.images}
+                      image={post.image}
                       title={post.title}
                     />
                   </Link>

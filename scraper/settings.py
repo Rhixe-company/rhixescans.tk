@@ -72,12 +72,12 @@ ROBOTSTXT_OBEY = False
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'scraper.pipelines.ScraperComicPipeline': 300,
+    # 'scraper.pipelines.MyImagesPipeline': 1,
+    'scraper.pipelines.PricePipeline': 300,
     # 'scraper.pipelines.ScraperChapterPipeline': 400,
 }
 
-
-# IMAGES_STORE = 'static/media/comics'
+# IMAGES_STORE = 'media'
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True

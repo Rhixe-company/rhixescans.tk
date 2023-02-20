@@ -1,0 +1,90 @@
+@import 'config';
+
+
+$theme-colors: ("info": rgb(7, 42, 42),
+  "danger": rgb(124, 51, 39),
+);
+
+body {
+  background: $primary-color;
+  color: $secondary-color;
+  height: 100%;
+  margin: 0;
+  font-family: 'Playfair', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.5;
+}
+
+// Headings 
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 400;
+
+}
+
+nav,
+ul,
+li,
+a {
+  text-decoration: none;
+  color: $secondary-color;
+}
+
+
+
+ul,
+li {
+  list-style-type: none;
+}
+
+
+a {
+  color: $primary-color;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #eece1a;
+
+}
+
+header {
+  position: fixed;
+
+  width: 100%;
+}
+
+main {
+  padding: 1rem;
+  height: 100%;
+
+}
+
+/* carousel */
+.carousel-item-next,
+.carousel-item-prev,
+.carousel-item.active {
+  display: flex;
+}
+
+.carousel-caption {
+  position: absolute;
+  top: 0;
+
+}
+
+
+.carousel img {
+  display: block;
+  height: 400px;
+  padding: 30px;
+  margin: 50px;
+  border-radius: 60%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.carousel a {
+  margin: 0 auto;
+}

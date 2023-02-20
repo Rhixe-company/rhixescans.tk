@@ -20,6 +20,8 @@ const useStyles = makeStyles((theme) => ({
   },
   singleMedia: {
     display: "flex",
+    width: "auto",
+    height: "auto",
   },
 }));
 
@@ -55,7 +57,7 @@ export default function Post({ match }) {
                   <Image
                     fluid
                     className={classes.singleMedia}
-                    src={comic?.images}
+                    src={comic?.image}
                     alt={comic?.title}
                   />
                 </div>
@@ -69,16 +71,19 @@ export default function Post({ match }) {
                   >
                     {comic?.title}{" "}
                   </Typography>
-                  <Typography
-                    variant="h6"
-                    align="center"
-                    color="textSecondary"
-                    paragraph
-                  >
-                    About:
-                    {comic?.description}{" "}
-                  </Typography>
+
                   <ListGroup variant="flush">
+                    <ListGroup.Item>
+                      <strong> About:</strong>{" "}
+                      <Typography
+                        variant="h6"
+                        align="center"
+                        color="textSecondary"
+                        paragraph
+                      >
+                        {comic?.description}{" "}
+                      </Typography>
+                    </ListGroup.Item>
                     <ListGroup.Item>
                       <strong>Alternativetitle:</strong>{" "}
                       {comic?.alternativetitle}
@@ -88,9 +93,12 @@ export default function Post({ match }) {
                       <em>{comic?.rating}</em>
                     </ListGroup.Item>
                     <ListGroup.Item>
+                      <strong>Status:</strong> {comic?.status}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
                       <strong> Genre:</strong>
-                      <div className="ml-auto d-flex">
-                        <div>
+                      <div>
+                        <div className="justify-content-md-center">
                           {comic?.genres?.map((item) => (
                             <div key={item.id}>{item.name}</div>
                           ))}
@@ -98,33 +106,28 @@ export default function Post({ match }) {
                       </div>
                     </ListGroup.Item>
                     <ListGroup.Item>
-                      <strong>Artist:</strong> {comic?.artist}
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      <strong>Published Date:</strong>{" "}
-                      {new Date(comic?.created).toLocaleString("en-US")}
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      <strong>Author:</strong> {comic?.author}
-                    </ListGroup.Item>
-                    <li className="list-group-item">
                       <strong>Category:</strong>{" "}
                       {comic?.category?.map((item) => (
                         <Link key={item.id} to={`/category/${item.id}/`}>
                           {item.name}
                         </Link>
                       ))}
-                    </li>
-                    <ListGroup.Item>
-                      <strong>Status:</strong> {comic?.status}
                     </ListGroup.Item>
                     <ListGroup.Item>
-                      <strong>Last Updated:</strong>{" "}
-                      {new Date(comic?.updated).toLocaleString("en-US")}
+                      <strong>Artist:</strong> {comic?.artist}
                     </ListGroup.Item>
 
                     <ListGroup.Item>
-                      <strong>Released:</strong> {comic?.released}
+                      <strong>Author:</strong> {comic?.author}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <strong>Published Date:</strong>{" "}
+                      {new Date(comic?.created).toLocaleString("en-US")}
+                    </ListGroup.Item>
+
+                    <ListGroup.Item>
+                      <strong>Last Updated:</strong>{" "}
+                      {new Date(comic?.updated).toLocaleString("en-US")}
                     </ListGroup.Item>
                   </ListGroup>
                 </div>
@@ -135,6 +138,7 @@ export default function Post({ match }) {
                 <ListGroup variant="flush">
                   {chapters?.map((chapter) => (
                     <ListGroup.Item key={chapter.id}>
+                      <strong>Name:</strong>
                       <Link to={`/chapter/${chapter.name}/`}>
                         {chapter.name}
                       </Link>

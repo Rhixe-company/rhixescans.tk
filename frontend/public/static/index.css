@@ -1,3 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair:wght@400;700&display=swap");
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+
+    font-family: 'Playfair', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.5;
+}
+
 /* scroll up*/
 #btn-back-to-top {
     position: fixed;

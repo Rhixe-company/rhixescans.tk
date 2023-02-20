@@ -88,7 +88,7 @@ const Posts = (props) => {
                           className={classes.link}
                           to={`/comic/${post.slug}/`}
                         >
-                          <Image src={post.images} alt={post.images} fluid />
+                          <Image src={post.image} alt={post.title} fluid />
                         </Link>
                       </TableCell>
 

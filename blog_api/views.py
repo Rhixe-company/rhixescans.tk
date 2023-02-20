@@ -8,31 +8,91 @@ from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import api_view, permission_classes
 from django.db.models import Q
-
-# Display Posts
-
-
-@api_view(['GET'])
-@permission_classes([
-    permissions.AllowAny
-])
-def getGenres(request):
-    genres = Genre.objects.all()
-    serializer = GenreSerializer(genres, many=True)
-    return Response(serializer.data)
+from rest_framework import mixins
 
 
-@api_view(['GET'])
-@permission_classes([
-    permissions.AllowAny
-])
-def getGenre(request, pk):
-    genre = Genre.objects.get(id=pk)
-    comics = Comic.objects.filter(Q(genres__name__icontains=genre))
-    serializer = GenreSerializer(genre, many=False)
-    serializer1 = ComicSerializer(comics, many=True)
-    context = {'genre': serializer.data, 'comics': serializer1.data}
-    return Response(context)
+class GenreViewSet(mixins.CreateModelMixin,
+                   mixins.ListModelMixin,
+                   mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """
+    A simple ViewSet for listing or retrieving genres.
+    """
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
+
+    def list(self, request):
+        genres = Genre.objects.all().order_by('name')
+        page = self.paginate_queryset(genres)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(genres, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Genre.objects.all()
+        genre = get_object_or_404(queryset, pk=pk)
+        comics = Comic.objects.filter(Q(genres__name__icontains=genre))
+        serializer = GenreSerializer(genre)
+        serializer1 = ComicSerializer(comics, many=True)
+        context = {'genre': serializer.data, 'comics': serializer1.data}
+        return Response(context)
+
+
+class ComicViewSet(mixins.CreateModelMixin,
+                   mixins.ListModelMixin,
+                   mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """
+    A simple ViewSet for listing or retrieving comics.
+    """
+    queryset = Comic.objects.all()
+    serializer_class = ComicsSerializer
+
+    def list(self, request):
+        comics = Comic.objects.all().order_by('-updated')
+        page = self.paginate_queryset(comics)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(comics, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Comic.objects.all()
+        comic = get_object_or_404(queryset, slug=pk)
+        chapters = comic.chapter_set.all().order_by('-name')
+        serializer = ComicSerializer(comic)
+        serializer1 = ChapterSerializer(chapters, many=True)
+        context = {'comic': serializer.data, 'chapters': serializer1.data}
+        return Response(context)
+
+
+class ChapterViewSet(viewsets.ModelViewSet):
+    """
+    A simple ViewSet for listing or retrieving chapters.
+    """
+    queryset = Chapter.objects.all()
+    serializer_class = ChapterSerializer
+
+    def list(self, request):
+        chapters = Chapter.objects.all().order_by('-updated')
+        page = self.paginate_queryset(chapters)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(chapters, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Chapter.objects.all()
+        chapter = get_object_or_404(queryset, name=pk)
+        pages = chapter.page_set.all()
+        serializer = ChapterSerializer(chapter)
+        serializer1 = PageSerializer(pages, many=True)
+        context = {'chapter': serializer.data, 'pages': serializer1.data}
+        return Response(context)
 
 
 @api_view(['GET'])

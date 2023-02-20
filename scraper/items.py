@@ -14,8 +14,10 @@ class ComicItem(Item):
         remove_tags, remove_white), output_processor=TakeFirst())
     slug = Field(input_processor=MapCompose(
         remove_tags, remove_white), output_processor=TakeFirst())
-    image_urls = Field(input_processor=MapCompose(
+    image = Field(input_processor=MapCompose(
         remove_tags, remove_white), output_processor=TakeFirst())
+    image_urls = Field(input_processor=MapCompose(
+        remove_tags, remove_white))
     description = Field(input_processor=MapCompose(
         remove_tags, remove_white), output_processor=TakeFirst())
     rating = Field(input_processor=MapCompose(

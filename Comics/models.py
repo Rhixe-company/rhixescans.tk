@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from io import BytesIO
 from django.core import files
 from requests_html import HTMLSession
+from PIL import Image
 # from django.db.models.signals import post_save
 # from django.contrib.auth.models import User
 # from django.dispatch import receiver
@@ -16,6 +17,9 @@ from requests_html import HTMLSession
 # def user_directory_path(instance, filename):
 #     return 'users/avatars/{0}/{1}'.format(instance.user.id, filename)
 s = HTMLSession()
+headers = {
+    'User-Agent': "Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0"
+}
 
 
 def comics_images_location(instance, filename):
@@ -82,9 +86,9 @@ class Comic(models.Model):
     description = models.TextField(blank=True, null=True)
     # image = models.ImageField(
     #    upload_to=None, max_length=100000, default='placeholder.png', height_field=None, width_field=None)
-    image_urls = models.URLField(max_length=100000)
-    images = models.ImageField(
-        max_length=100000, upload_to=comics_images_location)
+    image = models.URLField(max_length=100000)
+    # images = models.ImageField(
+    #     max_length=100000, upload_to=comics_images_location)
     rating = models.DecimalField(max_digits=9, decimal_places=1, blank=True)
     status = models.CharField(
         max_length=15, choices=options, default='Ongoing')
@@ -117,23 +121,17 @@ class Comic(models.Model):
     def __str__(self):
         return self.title
 
-    def save(self, *args, **kwargs):
+    # def save(self, *args, **kwargs):
 
-        if self.images == '' and self.image_urls != '':
-
-            headers = {
-                'User-Agent': "Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0"
-            }
-            resp = s.get(self.image_urls,  stream=True, headers=headers)
-            pb = BytesIO()
-            pb.write(resp.content)
-            pb.flush()
-            file_name = self.image_urls.split("/")[-1]
-            self.images.save(file_name, files.File(pb),
-                             save=True)
-            return super().save(*args, **kwargs)
-        else:
-            pass
+    #     if self.images == '' and self.image_urls != '':
+    #         resp = s.get(self.image_urls,  stream=True, headers=headers)
+    #         orig_image = Image.open(BytesIO(resp.content))
+    #         file_name = self.image_urls.split("/")[-1]
+    #         self.images.save(file_name, files.File(orig_image),
+    #                          save=True)
+    #         return super().save(*args, **kwargs)
+    #     else:
+    #         pass
 
 
 class ExtraManagers(models.Model):
@@ -191,9 +189,6 @@ class Page(models.Model):
     def save(self, *args, **kwargs):
         if self.images == '' and self.image_urls != '':
 
-            headers = {
-                'User-Agent': "Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0"
-            }
             resp = s.get(self.image_urls,  stream=True, headers=headers)
             pb = BytesIO()
             pb.write(resp.content)

@@ -31,11 +31,20 @@ import {
   categoryDetailsReducer,
   categorysListReducer,
 } from "./categoryReducers";
+import {
+  comicBookmarkLikeReducer,
+  comicBookmarkListReducer,
+  comicBookmarkReducer,
+} from "./bookmarkReducers";
+
 const reducer = combineReducers({
-  genres: genresListReducer,
-  genre: genreDetailsReducer,
-  categorys: categorysListReducer,
-  category: categoryDetailsReducer,
+  comicsBookmark: comicBookmarkReducer,
+  comicBookmarkList: comicBookmarkListReducer,
+  comicBookmarkLike: comicBookmarkLikeReducer,
+  genresList: genresListReducer,
+  genreDetails: genreDetailsReducer,
+  categorysList: categorysListReducer,
+  categoryDetails: categoryDetailsReducer,
   chaptersList: chaptersListReducer,
   chapterDetails: chapterDetailsReducer,
   chapterDelete: chapterDeleteReducer,

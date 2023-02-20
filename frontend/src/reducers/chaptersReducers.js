@@ -34,7 +34,9 @@ export const chaptersListReducer = (state = {}, action) => {
       return {
         ...state,
         loading: false,
-        chapters: action.payload,
+        chapters: action.payload.data,
+        count: action.payload.count,
+        links: action.payload.links,
       };
 
     case CHAPTERS_LIST_FAIL:
@@ -54,7 +56,7 @@ export const chapterDetailsReducer = (state = {}, action) => {
       return {
         ...state,
         loading: false,
-        chapter: action.payload,
+        chapter: action.payload.chapter,
         pages: action.payload.pages,
       };
 

@@ -13,7 +13,7 @@ export const genresListReducer = (state = {}, action) => {
       return { loading: true };
 
     case GENRES_LIST_SUCCESS:
-      return { ...state, loading: false, genres: action.payload };
+      return { ...state, loading: false, genres: action.payload.data };
 
     case GENRES_LIST_FAIL:
       return { loading: false, error: action.payload };

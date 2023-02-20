@@ -54,15 +54,31 @@ const Page = ({ match, history }) => {
           ) : (
             <div className={classes.heroContent}>
               <Container maxWidth="sm">
-                <Typography
-                  component="h1"
-                  variant="h2"
-                  align="center"
-                  color="textPrimary"
-                  gutterBottom
-                >
-                  {chapter?.name}
-                </Typography>
+                <div>
+                  <Link to={`/comic/${chapter?.comic.slug}/`}>
+                    <Typography
+                      component="h2"
+                      variant="h3"
+                      align="center"
+                      color="textPrimary"
+                      gutterBottom
+                    >
+                      {chapter?.comic.title}
+                    </Typography>
+                  </Link>
+                  <Link to={`/chapter/${chapter?.name}/`}>
+                    <Typography
+                      component="h3"
+                      variant="h4"
+                      align="center"
+                      color="textPrimary"
+                      gutterBottom
+                    >
+                      {chapter?.name}
+                    </Typography>
+                  </Link>
+                </div>
+
                 {pages?.map((page) => (
                   <InfiniteScroll
                     key={page.id}
@@ -77,15 +93,30 @@ const Page = ({ match, history }) => {
                     />
                   </InfiniteScroll>
                 ))}
-                <Typography
-                  component="h1"
-                  variant="h2"
-                  align="center"
-                  color="textPrimary"
-                  gutterBottom
-                >
-                  {chapter?.name}
-                </Typography>
+                <div>
+                  <Link to={`/comic/${chapter?.comic.slug}/`}>
+                    <Typography
+                      component="h2"
+                      variant="h3"
+                      align="center"
+                      color="textPrimary"
+                      gutterBottom
+                    >
+                      {chapter?.comic.title}
+                    </Typography>
+                  </Link>
+                  <Link to={`/chapter/${chapter?.name}/`}>
+                    <Typography
+                      component="h3"
+                      variant="h4"
+                      align="center"
+                      color="textPrimary"
+                      gutterBottom
+                    >
+                      {chapter?.name}
+                    </Typography>
+                  </Link>
+                </div>
               </Container>
             </div>
           )}
