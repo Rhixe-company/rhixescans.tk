@@ -33,7 +33,7 @@ class ComicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comic
         fields = ['id', 'title', 'image', 'slug', 'category', 'author', 'artist',
-                  'description', 'rating', 'genres', 'status', 'alternativetitle', 'created', 'updated']
+                  'description', 'rating', 'genres', 'status', 'alternativetitle',  'image_url', 'favourites', 'likes', 'like_count']
 
     def get_category(self, obj):
         category = obj.category.all()
@@ -79,7 +79,7 @@ class ComicsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comic
         fields = ['id', 'title', 'image', 'slug', 'category', 'author', 'artist',
-                  'description', 'rating', 'genres', 'status', 'alternativetitle', 'chapters']
+                  'description', 'rating', 'genres', 'status', 'alternativetitle', 'chapters', 'image_url', 'favourites', 'likes', 'like_count']
 
     def get_category(self, obj):
         category = obj.category.all()

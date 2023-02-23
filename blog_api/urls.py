@@ -1,10 +1,15 @@
-from .views import *
+from .views import ComicViewSet, ChapterViewSet, PostListDetailfilter, GenreViewSet, CreatePost, AdminPostDetail, EditPost, DeletePost
 from django.urls import path
 from . import views
 app_name = 'blog_api'
 
 urlpatterns = [
-    path('comics/', ComicViewSet.as_view({'get': 'list'}), name="comics"),
+    path(
+        'comics/', ComicViewSet.as_view({'get': 'recent_comics'}), name="comics"),
+    path(
+        'bookmarks/', ComicViewSet.as_view({'get': 'bookmark_comics'}), name="bookamrks"),
+    path(
+        'bookmarks/<str:pk>/', ComicViewSet.as_view({'get': 'like'}), name="comics_like"),
     path('comic/<str:pk>/',
          ComicViewSet.as_view({'get': 'retrieve'}), name="comic"),
     path('chapters/',
@@ -12,7 +17,7 @@ urlpatterns = [
     path('chapter/<str:pk>/',
          ChapterViewSet.as_view({'get': 'retrieve'}), name="chapter"),
     path('comics/top/', views.getTopComics, name='top-comics'),
-    path('search/', PostListDetailfilter.as_view(), name='searchpost'),
+    path('comics/search/', PostListDetailfilter.as_view(), name='searchpost'),
     path('genres/', GenreViewSet.as_view({'get': 'list'}), name="genresapi"),
     path('genres/<str:pk>/',
          GenreViewSet.as_view({'get': 'retrieve'}), name="genreapi"),

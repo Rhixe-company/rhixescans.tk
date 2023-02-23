@@ -33,7 +33,7 @@ export const comicsListReducer = (state = {}, action) => {
         loading: false,
         comics: action.payload.data,
         count: action.payload.count,
-        links: action.payload.links,
+        pages: action.payload.pages,
       };
 
     case COMICS_LIST_FAIL:

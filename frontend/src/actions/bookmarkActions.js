@@ -11,7 +11,6 @@ import {
   COMICS_BOOKMARK_LIKE_FAIL,
 } from "../constants/bookmarkConstants";
 import { logout } from "./userActions";
-import { COMICS_DETAILS_RESET } from "../constants/comicsConstants";
 
 export const LikeComic = (id) => async (dispatch, getState) => {
   try {
@@ -42,9 +41,6 @@ export const LikeComic = (id) => async (dispatch, getState) => {
       type: COMICS_BOOKMARK_LIKE_SUCCESS,
       payload: data,
     });
-    dispatch({
-      type: COMICS_DETAILS_RESET,
-    });
   } catch (error) {
     dispatch({
       type: COMICS_BOOKMARK_LIKE_FAIL,
@@ -56,7 +52,7 @@ export const LikeComic = (id) => async (dispatch, getState) => {
   }
 };
 
-export const bookmarkComic = (id) => async (dispatch, getState) => {
+export const bookmarkComic = (slug) => async (dispatch, getState) => {
   try {
     dispatch({
       type: COMICS_BOOKMARK_ADD_REQUEST,
@@ -73,13 +69,10 @@ export const bookmarkComic = (id) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.post(`/api/bookmarks/${id}/`, {}, config);
+    const { data } = await axios.get(`/api/bookmarks/${slug}/`, config);
     dispatch({
       type: COMICS_BOOKMARK_ADD_SUCCESS,
       payload: data,
-    });
-    dispatch({
-      type: COMICS_DETAILS_RESET,
     });
   } catch (error) {
     dispatch({

@@ -10,7 +10,7 @@ const CategoryScreens = ({ match }) => {
   const categorId = match.params.id;
   const dispatch = useDispatch();
   const { category, error, loading, comics } = useSelector(
-    (state) => state.category
+    (state) => state.categoryDetails
   );
   useEffect(() => {
     dispatch(listcategorysDetails(categorId));

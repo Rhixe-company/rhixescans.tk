@@ -16,8 +16,10 @@ class ComicItem(Item):
         remove_tags, remove_white), output_processor=TakeFirst())
     image = Field(input_processor=MapCompose(
         remove_tags, remove_white), output_processor=TakeFirst())
+    image_url = Field(input_processor=MapCompose(
+        remove_tags, remove_white), output_processor=TakeFirst())
     image_urls = Field(input_processor=MapCompose(
-        remove_tags, remove_white))
+        remove_tags, remove_white), output_processor=TakeFirst())
     description = Field(input_processor=MapCompose(
         remove_tags, remove_white), output_processor=TakeFirst())
     rating = Field(input_processor=MapCompose(

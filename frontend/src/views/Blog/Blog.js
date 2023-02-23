@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { listComics, listTopComics } from "../../actions/comicsActions";
 
 import Grid from "@mui/material/Grid";
-import Container from "@mui/material/Container";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
@@ -15,9 +14,10 @@ import MainFeaturedPost from "./MainFeaturedPost";
 // import FeaturedPost from "./FeaturedPost";
 import Main from "./Main";
 import Sidebar from "./Sidebar";
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
+// import Pagination from "@mui/material/Pagination";
+// import Stack from "@mui/material/Stack";
 import { listGenres } from "../../actions/genresActions";
+
 const sidebar = {
   title: "Solo Leveling",
   description:
@@ -29,10 +29,11 @@ const sidebar = {
     { name: "Facebook", icon: FacebookIcon },
   ],
 };
-export default function Blog() {
+export default function Blog({ match }) {
+  const pageNumber = match.params.pageNumber || 1;
   const dispatch = useDispatch();
   const comicsList = useSelector((state) => state.comicsList);
-  const { comics, error, loading } = comicsList;
+  const { comics, error, loading, pages } = comicsList;
 
   const comicsTopRated = useSelector((state) => state.comicsTopRated);
   const {
@@ -44,12 +45,13 @@ export default function Blog() {
   const { error: errorGenres, loading: loadingGenres, genres } = genresList;
 
   useEffect(() => {
-    dispatch(listComics());
+    dispatch(listComics(pageNumber));
     dispatch(listTopComics());
     dispatch(listGenres());
-  }, [dispatch]);
+  }, [dispatch, pageNumber]);
+  console.log(pages);
   return (
-    <Container maxWidth="lg">
+    <React.Fragment>
       {loadingTop && <Loader />}
       {errorTop && <Message variant="danger">{errorTop}</Message>}
       {loadingGenres && <Loader />}
@@ -67,7 +69,8 @@ export default function Blog() {
             ))}
           </Grid> */}
           <Grid container spacing={5} sx={{ mt: 3 }}>
-            <Main title="Lastest Comics " posts={comics} />
+            <Main pages={pages} title="Lastest Comics " posts={comics} />
+
             <Sidebar
               title={sidebar.title}
               description={sidebar.description}
@@ -75,11 +78,11 @@ export default function Blog() {
               social={sidebar.social}
             />
           </Grid>
-          <Stack spacing={2}>
+          {/* <Stack spacing={2}>
             <Pagination count={11} defaultPage={6} siblingCount={0} />
-          </Stack>
+          </Stack> */}
         </main>
       )}
-    </Container>
+    </React.Fragment>
   );
 }

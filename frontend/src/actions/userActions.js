@@ -43,11 +43,11 @@ export const login = (formData) => async (dispatch) => {
       type: USER_LOGIN_SUCCESS,
       payload: data,
     });
-    localStorage.setItem("access_token", data.access);
-    localStorage.setItem("refresh_token", data.refresh);
+    // localStorage.setItem("access_token", data.access);
+    // localStorage.setItem("refresh_token", data.refresh);
     localStorage.setItem("userInfo", JSON.stringify(data));
-    axiosInstance.defaults.headers["Authorization"] =
-      "JWT " + localStorage.getItem("access_token");
+    // axiosInstance.defaults.headers["Authorization"] =
+    //   "JWT " + localStorage.getItem("access_token");
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAIL,
@@ -63,11 +63,11 @@ export const logout = () => (dispatch) => {
   dispatch({ type: USER_LOGOUT });
   dispatch({ type: USER_DETAILS_RESET });
   dispatch({ type: USER_LIST_RESET });
-  axiosInstance.post("user/logout/blacklist/", {
-    refresh_token: localStorage.getItem("refresh_token"),
-  });
-  localStorage.removeItem("access_token");
-  localStorage.removeItem("refresh_token");
+  // axiosInstance.post("user/logout/blacklist/", {
+  //   refresh_token: localStorage.getItem("refresh_token"),
+  // });
+  // localStorage.removeItem("access_token");
+  // localStorage.removeItem("refresh_token");
   localStorage.removeItem("userInfo");
   axiosInstance.defaults.headers["Authorization"] = null;
 };

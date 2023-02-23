@@ -86,9 +86,10 @@ class Comic(models.Model):
     description = models.TextField(blank=True, null=True)
     # image = models.ImageField(
     #    upload_to=None, max_length=100000, default='placeholder.png', height_field=None, width_field=None)
-    image = models.URLField(max_length=100000)
-    # images = models.ImageField(
-    #     max_length=100000, upload_to=comics_images_location)
+    image_url = models.URLField(max_length=100000, null=True)
+    image = models.ImageField(
+        max_length=100000, upload_to=comics_images_location)
+
     rating = models.DecimalField(max_digits=9, decimal_places=1, blank=True)
     status = models.CharField(
         max_length=15, choices=options, default='Ongoing')
@@ -98,10 +99,7 @@ class Comic(models.Model):
     serialization = models.CharField(max_length=1000, blank=True, null=True)
     numChapters = models.IntegerField(default=0, null=True, blank=True)
     numReviews = models.IntegerField(default=0, null=True, blank=True)
-    # genres = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
-    # category = models.ForeignKey(
-    #     Categorys, on_delete=models.SET_NULL, null=True, blank='False')
-    genres = models.ManyToManyField(Genre)
+    genres = models.ManyToManyField(Genre, blank='True')
     category = models.ManyToManyField(Categorys)
     created_by = models.CharField(max_length=100, blank=True, null=True)
 
@@ -111,15 +109,29 @@ class Comic(models.Model):
         settings.AUTH_USER_MODEL, related_name='favourite', blank=True,  default=None)
     likes = models.ManyToManyField(
         settings.AUTH_USER_MODEL, related_name='like', default=None, blank=True)
-    like_count = models.BigIntegerField(default=0, blank=True)
+    like_count = models.IntegerField(blank=True)
     objects = models.Manager()  # default manager
     newmanager = NewManager()
 
-    # class Meta:
-    #     ordering = ('-updated',)
+    class Meta:
+        ordering = ('updated',)
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if self.image == '' and self.image_url != '':
+            resp = s.get(self.image_url,  stream=True, headers=headers)
+            pb = BytesIO()
+            pb.write(resp.content)
+            pb.flush()
+            # pb = Image.open(BytesIO(resp.content))
+            file_name = self.image_url.split("/")[-1]
+            self.image.save(file_name, files.File(pb),
+                            save=True)
+            return super().save(*args, **kwargs)
+        else:
+            return print(self.title)
 
     # def save(self, *args, **kwargs):
 
@@ -158,7 +170,7 @@ class Chapter(models.Model):
                              on_delete=models.SET_NULL, null=True)
     readers = models.ManyToManyField(
         settings.AUTH_USER_MODEL, blank=True, related_name='reader')
-    comic = models.ForeignKey(Comic, on_delete=models.CASCADE)
+    comic = models.ForeignKey(Comic, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=1000, unique=True, null=True)
     pages = models.ManyToManyField('Page', blank=True, related_name='pages')
     rating = models.DecimalField(
@@ -169,7 +181,7 @@ class Chapter(models.Model):
     created = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        ordering = ('-updated',)
+        ordering = ('updated',)
 
     def __str__(self):
         return self.name
@@ -193,12 +205,13 @@ class Page(models.Model):
             pb = BytesIO()
             pb.write(resp.content)
             pb.flush()
+            # pb = Image.open(BytesIO(resp.content))
             file_name = self.image_urls.split("/")[-1]
             self.images.save(file_name, files.File(pb),
                              save=True)
             return super().save(*args, **kwargs)
         else:
-            pass
+            return print(self.chapter.name)
 
 
 class Review(models.Model):
@@ -224,7 +237,7 @@ class Review(models.Model):
     created = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        ordering = ['-updated', '-created']
+        ordering = ['updated', 'created']
 
     def __str__(self):
         return self.text

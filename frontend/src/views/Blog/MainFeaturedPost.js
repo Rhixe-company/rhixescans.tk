@@ -5,11 +5,11 @@ import { FaCrown } from "react-icons/fa";
 const MainFeaturedPost = ({ posts }) => {
   return (
     <Col>
-      <Carousel variant="dark">
+      <Carousel variant="white">
         {posts?.map((comic) => (
-          <Carousel.Item interval={6000} key={comic.id}>
+          <Carousel.Item interval={8000} key={comic.id}>
             <Link to={`/comic/${comic.slug}`}>
-              <Image src={comic?.image} alt={comic?.title} fluid />
+              <Image src={comic.image} alt={comic.image_url} />
               <Carousel.Caption className="carousel.caption">
                 <FaCrown />
                 <h2>{comic?.title}</h2>

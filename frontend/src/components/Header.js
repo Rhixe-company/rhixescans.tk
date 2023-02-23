@@ -1,16 +1,15 @@
 import * as React from "react";
 
-import { useState} from "react";
+import { useState, useEffect } from "react";
 
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
-import FormContainer from "./FormContainer";
+// import FormContainer from "./FormContainer";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import logo from "../svgs/logo.svg";
 import SearchBar from "material-ui-search-bar";
 import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../actions/userActions";
 import { LinkContainer } from "react-router-bootstrap";
 import { Nav, NavDropdown } from "react-bootstrap";
@@ -23,19 +22,23 @@ import {
   FaBookOpen,
   FaBookmark,
 } from "react-icons/fa";
-// import { listGenres } from "../actions/genresActions";
-function Header() {
+import { listCategorys } from "../actions/categoryActions";
+import Loader from "./Loader";
+import Message from "./Message";
+import { useDispatch, useSelector } from "react-redux";
+
+function Header({ title }) {
   let history = useHistory();
   const [data, setData] = useState({ search: "" });
+
+  const dispatch = useDispatch();
+  const categorysList = useSelector((state) => state.categorysList);
+  const { error: errorCat, loading: loadingCat, categorys } = categorysList;
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-  const dispatch = useDispatch();
-
-  // const { genres } = useSelector((state) => state.genres);
-
-  // useEffect(() => {
-  //   dispatch(listGenres());
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(listCategorys());
+  }, [dispatch]);
   const goSearch = (e) => {
     history.push({
       pathname: "/#/search/",
@@ -50,6 +53,8 @@ function Header() {
 
   return (
     <React.Fragment>
+      {loadingCat && <Loader />}
+      {errorCat && <Message variant="danger">{errorCat}</Message>}
       <Toolbar sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Link
           color="inherit"
@@ -60,7 +65,7 @@ function Header() {
         >
           <img
             src={logo}
-            alt={logo}
+            alt={title}
             width="10%"
             height="10%"
             className="d-inline-block align-middle"
@@ -74,19 +79,24 @@ function Header() {
           noWrap
           sx={{ flex: 1 }}
         >
-          <FormContainer>
-            <SearchBar
-              value={data.search}
-              onChange={(newValue) => setData({ search: newValue })}
-              onRequestSearch={() => goSearch(data.search)}
-            />
-          </FormContainer>
+          <SearchBar
+            value={data.search}
+            onChange={(newValue) => setData({ search: newValue })}
+            onRequestSearch={() => goSearch(data.search)}
+          />
         </Typography>
 
         <Nav>
           <LinkContainer to="/blog">
             <Nav.Link>Comics</Nav.Link>
           </LinkContainer>
+          <NavDropdown title="Category" id="genres">
+            {categorys?.map((cat) => (
+              <LinkContainer key={cat.id} to={`/cat/${cat.id}`}>
+                <NavDropdown.Item>{cat.name}</NavDropdown.Item>
+              </LinkContainer>
+            ))}
+          </NavDropdown>
 
           {userInfo ? (
             <NavDropdown title={userInfo.user_name} id="username">

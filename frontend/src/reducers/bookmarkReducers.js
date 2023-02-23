@@ -37,7 +37,7 @@ export const comicBookmarkReducer = (state = {}, action) => {
       return { loading: true };
 
     case COMICS_BOOKMARK_ADD_SUCCESS:
-      return { loading: false, success: true };
+      return { loading: false, success: true, msg: action.payload };
 
     case COMICS_BOOKMARK_ADD_FAIL:
       return { loading: false, error: action.payload };

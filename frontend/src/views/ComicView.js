@@ -13,9 +13,8 @@ import {
   FaUserCheck,
   FaHeartBroken,
 } from "react-icons/fa";
-import CssBaseline from "@material-ui/core/CssBaseline";
+
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { useParams } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
@@ -50,7 +49,7 @@ const ComicView = ({ match }) => {
 
   function bookmarkHandler(e) {
     e.preventDefault();
-    dispatch(bookmarkComic(match.params.id));
+    dispatch(bookmarkComic(match.params.slug));
   }
 
   function likeHandler(e) {
@@ -59,8 +58,7 @@ const ComicView = ({ match }) => {
   }
 
   return (
-    <Container component="main" maxWidth="md">
-      <CssBaseline />
+    <React.Fragment>
       <div className={classes.paper}> </div>{" "}
       {loading ? (
         <Loader />
@@ -269,7 +267,7 @@ const ComicView = ({ match }) => {
           </div>
         </>
       )}
-    </Container>
+    </React.Fragment>
   );
 };
 

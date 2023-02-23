@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from Comics.models import *
+from Comics.pagination import CustomPagination
 from .serializers import *
 from rest_framework import viewsets, filters, generics, permissions
 from rest_framework.response import Response
@@ -9,11 +10,23 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import api_view, permission_classes
 from django.db.models import Q
 from rest_framework import mixins
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.decorators import action
 
 
-class GenreViewSet(mixins.CreateModelMixin,
-                   mixins.ListModelMixin,
-                   mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+def get_permissions(self):
+    """
+    Instantiates and returns the list of permissions that this view requires.
+    """
+    if self.action == 'list':
+        permission_classes = [IsAuthenticated]
+    else:
+        permission_classes = [IsAdminUser]
+    return [permission() for permission in permission_classes]
+
+
+class GenreViewSet(mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
     """
     A simple ViewSet for listing or retrieving genres.
     """
@@ -39,17 +52,19 @@ class GenreViewSet(mixins.CreateModelMixin,
         return Response(context)
 
 
-class ComicViewSet(mixins.CreateModelMixin,
-                   mixins.ListModelMixin,
-                   mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class ComicViewSet(
+        mixins.ListModelMixin,
+        viewsets.GenericViewSet):
     """
     A simple ViewSet for listing or retrieving comics.
     """
-    queryset = Comic.objects.all()
-    serializer_class = ComicsSerializer
 
-    def list(self, request):
-        comics = Comic.objects.all().order_by('-updated')
+    serializer_class = ComicsSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    @action(detail=False)
+    def recent_comics(self, request):
+        comics = Comic.objects.all().order_by('updated')
         page = self.paginate_queryset(comics)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -58,6 +73,7 @@ class ComicViewSet(mixins.CreateModelMixin,
         serializer = self.get_serializer(comics, many=True)
         return Response(serializer.data)
 
+    @action(detail=False)
     def retrieve(self, request, pk=None):
         queryset = Comic.objects.all()
         comic = get_object_or_404(queryset, slug=pk)
@@ -67,6 +83,28 @@ class ComicViewSet(mixins.CreateModelMixin,
         context = {'comic': serializer.data, 'chapters': serializer1.data}
         return Response(context)
 
+    @action(detail=False)
+    def like(self, request, pk=None):
+        queryset = Comic.objects.all()
+        comic = get_object_or_404(queryset, slug=pk)
+        if comic.favourites.filter(id=request.user.id).exists():
+            comic.favourites.remove(request.user)
+            return Response('Comic Removed from Favourite')
+        else:
+            comic.favourites.add(request.user)
+            return Response('Comic Added to Favourite')
+
+    @action(detail=False)
+    def bookmark_comics(self, request):
+        comics = Comic.objects.filter(favourites=request.user)
+        page = self.paginate_queryset(comics)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(comics, many=True)
+        return Response(serializer.data)
+
 
 class ChapterViewSet(viewsets.ModelViewSet):
     """
@@ -74,6 +112,7 @@ class ChapterViewSet(viewsets.ModelViewSet):
     """
     queryset = Chapter.objects.all()
     serializer_class = ChapterSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def list(self, request):
         chapters = Chapter.objects.all().order_by('-updated')
@@ -141,51 +180,14 @@ def getTopComics(request):
     return Response(serializer.data)
 
 
-class PostList(generics.ListAPIView):
-    serializer_class = ComicsSerializer
-    queryset = Comic.objects.all()
-
-
-class PostDetail(generics.RetrieveAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = ComicSerializer
-
-    def get_object(self, queryset=None, **kwargs):
-        item = self.kwargs.get('pk')
-        return get_object_or_404(Comic, slug=item)
-
-
-class ChapterList(generics.ListAPIView):
-    serializer_class = ChapterSerializer
-    queryset = Chapter.objects.all()
-
-
-class ChapterDetail(generics.RetrieveAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = ChapterSerializer
-
-    def get_object(self, queryset=None, **kwargs):
-        item = self.kwargs.get('pk')
-        return get_object_or_404(Chapter, name=item)
-
-# Comic Search
-
-
 class PostListDetailfilter(generics.ListAPIView):
 
-    queryset = Comic.objects.all()
+    queryset = Comic.objects.all().order_by('title')
     serializer_class = ComicsSerializer
     filter_backends = [filters.SearchFilter]
     # '^' Starts-with search.
     # '=' Exact matches.
     search_fields = ['^title']
-
-# Comic Admin
-
-# class CreatePost(generics.CreateAPIView):
-#     permission_classes = [permissions.IsAuthenticated]
-#     queryset = Comic.objects.all()
-#     serializer_class = ComicSerializer
 
 
 class CreatePost(APIView):
@@ -218,25 +220,3 @@ class DeletePost(generics.RetrieveDestroyAPIView):
     permission_classes = [permissions.IsAdminUser]
     serializer_class = ComicSerializer
     queryset = Comic.objects.all()
-
-
-""" Concrete View Classes
-# CreateAPIView
-Used for create-only endpoints.
-# ListAPIView
-Used for read-only endpoints to represent a collection of model instances.
-# RetrieveAPIView
-Used for read-only endpoints to represent a single model instance.
-# DestroyAPIView
-Used for delete-only endpoints for a single model instance.
-# UpdateAPIView
-Used for update-only endpoints for a single model instance.
-# ListCreateAPIView
-Used for read-write endpoints to represent a collection of model instances.
-RetrieveUpdateAPIView
-Used for read or update endpoints to represent a single model instance.
-# RetrieveDestroyAPIView
-Used for read or delete endpoints to represent a single model instance.
-# RetrieveUpdateDestroyAPIView
-Used for read-write-delete endpoints to represent a single model instance.
-"""

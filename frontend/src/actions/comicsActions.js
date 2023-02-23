@@ -22,32 +22,34 @@ import {
 } from "../constants/comicsConstants";
 import { logout } from "./userActions";
 
-export const listComics = () => async (dispatch) => {
-  try {
-    dispatch({ type: COMICS_LIST_REQUEST });
+export const listComics =
+  (pageNumber = "") =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: COMICS_LIST_REQUEST });
 
-    const { data } = await axiosInstance.get("/comics/");
-    dispatch({
-      type: COMICS_LIST_SUCCESS,
-      payload: data,
-    });
-  } catch (error) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    if (message === "Not authorized, token failed") {
-      dispatch(logout());
+      const { data } = await axiosInstance.get(`/comics/?&page=${pageNumber}`);
+      dispatch({
+        type: COMICS_LIST_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      const message =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      if (message === "Not authorized, token failed") {
+        dispatch(logout());
+      }
+      dispatch({
+        type: COMICS_LIST_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
     }
-    dispatch({
-      type: COMICS_LIST_FAIL,
-      payload:
-        error.response && error.response.data.detail
-          ? error.response.data.detail
-          : error.message,
-    });
-  }
-};
+  };
 
 export const listComicDetails = (slug) => async (dispatch) => {
   try {

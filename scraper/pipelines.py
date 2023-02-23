@@ -7,12 +7,26 @@ from django.db.models import Q
 
 class PricePipeline:
 
-    existcomic = ComicsManager
-    existchapter = Chapter
-
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
         if adapter.get('title') and adapter.get('slug'):
+            obj, created = ComicsManager.objects.filter(
+                Q(title__icontains=item['title']) |
+                Q(slug__icontains=item['slug'])
+            ).update_or_create(image_url=item['image_url'],  rating=item['rating'], status=item['status'], description=item['description'], released=item['released'],  author=item['author'],  artist=item['artist'], alternativetitle=item['alternativetitle'], serialization=item['serialization'], created_by=item['created_by'], defaults={'title': item['title'], 'slug': item['slug']})
+            obj2, created = Categorys.objects.filter(
+                Q(name__icontains=item['category'])
+            ).update_or_create(
+                name=item['category'], defaults={'name': item['category']})
+            obj.category.add(obj2)
+            for genre in item['genres']:
+                obj1, created = Genre.objects.filter(
+                    Q(name__icontains=genre)
+                ).update_or_create(
+                    name=genre, defaults={'name': genre})
+                obj.genres.add(obj1)
+                obj.save()
+
             return item
         else:
             raise DropItem(f"Missing field in Comic:{item}")

@@ -6,9 +6,9 @@ import Divider from "@mui/material/Divider";
 import { Link } from "react-router-dom";
 import Message from "../../components/Message";
 import { ListGroup, Image } from "react-bootstrap";
-
+import Paginate from "../../components/Paginate";
 function Main(props) {
-  const { posts, title } = props;
+  const { posts, title, pages } = props;
 
   return (
     <Grid
@@ -29,7 +29,7 @@ function Main(props) {
         <div className="markdown" key={post?.id}>
           <div>
             <Link to={`/comic/${post.slug}/`}>
-              <Image src={post.image} alt={post.title} fluid />
+              <Image alt={post.image} src={post.image_url} />
             </Link>
           </div>
           <div>
@@ -75,6 +75,7 @@ function Main(props) {
           </div>
         </div>
       ))}
+      <Paginate pages={pages} />
     </Grid>
   );
 }
