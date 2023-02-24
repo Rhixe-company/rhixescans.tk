@@ -1,70 +1,56 @@
-import "./App.scss";
-import React, { Fragment } from "react";
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
-
-import Home from "./views/Home";
-import Register from "./components/auth/register";
-import Login from "./components/auth/login";
-import Logout from "./components/auth/logout";
-import Search from "./views/search";
-import Admin from "./views/Admin";
-import Create from "./components/comics/create";
-import Edit from "./components/comics/edit";
-import Delete from "./components/comics/delete";
-import UserList from "./views/UserList";
-import UserEdit from "./views/UserEdit";
-import Profile from "./views/Profile";
-import Page from "./views/Page";
-import Blog from "./views/Blog/Blog";
-import Dashboard from "./views/Dashboard/Dashboard";
-import ComicView from "./views/ComicView";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import CategoryScreens from "./views/CategoryScreens";
-import GenreScreens from "./views/GenreScreens";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Container from "@mui/material/Container";
-
-const theme = createTheme();
-
+import React from "react";
+import { HashRouter as Router, Switch, Route } from "react-router-dom";
+import { ThemeProvider, createTheme } from "@material-ui/core/styles";
+import { deepPurple } from "@material-ui/core/colors";
+import Dashboard from "./pages/Free/Dashboard";
+import Home from "./pages/Free/Home";
+import Comic from "./pages/Free/Comic";
+import Chapter from "./pages/Free/Chapter";
+import Genre from "./pages/Free/Genre";
+import Cat from "./pages/Free/Cat";
+import Login from "./pages/Free/Login";
+import Register from "./pages/Free/Register";
+import Users from "./pages/Protected/Users";
+import Profile from "./pages/Protected/Profile";
+import Comics from "./pages/Protected/Comics";
+import Chapters from "./pages/Protected/Chapters";
+import Bookmarks from "./pages/Protected/Bookmarks";
+const theme = createTheme({
+  typography: {
+    h2: {
+      fontSize: 36,
+      marginBottom: 15,
+    },
+  },
+  palette: {
+    primary: {
+      main: deepPurple[400],
+    },
+  },
+});
 const App = () => {
   return (
-    <Fragment>
+    <ThemeProvider theme={theme}>
       <Router>
-        <ThemeProvider theme={theme}>
-          <Container maxWidth="lg">
-            <Header title="Blog" />
-
-            <Switch>
-              <Route path="/blog" component={Home} />
-
-              <Route path="/admin/chapters/" component={Dashboard} />
-              <Route path="/admin/comics/create" component={Create} />
-              <Route path="/admin/comic/edit/:id" component={Edit} />
-              <Route path="/admin/comics/delete/:id" component={Delete} />
-              <Route path="/register" component={Register} />
-              <Route path="/login" component={Login} />
-              <Route path="/logout" component={Logout} />
-              <Route path="/comic/:slug" component={ComicView} />
-              <Route path="/chapter/:name" component={Page} />
-              <Route path="/search" component={Search} />
-              <Route path="/admin/users" component={UserList} />
-              <Route path="/admin/user/:id/edit" component={UserEdit} />
-              <Route path="/profile" component={Profile} />
-              <Route path="/cat/:id/" component={CategoryScreens} />
-              <Route path="/genres/:id/" component={GenreScreens} />
-              <Route path="/admin/comics" component={Admin} exact />
-              <Route path="/admin/comics/:pageNumber" component={Admin} />
-
-              <Route path="/page/:pageNumber" component={Blog} exact />
-
-              <Route path="/" component={Blog} exact />
-            </Switch>
-            <Footer title="Rhixescans" description="manhwa manhua" />
-          </Container>
-        </ThemeProvider>
+        <Switch>
+          <Route path="/comic/:slug" component={Comic} />
+          <Route path="/chapter/:name" component={Chapter} />
+          <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
+          <Route path="/blog" component={Home} />
+          <Route path="/genres/:id" component={Genre} />
+          <Route path="/cat/:id" component={Cat} />
+          <Route path="/profile" component={Profile} />
+          <Route path="/bookmarks" component={Bookmarks} />
+          <Route path="/admin/users" component={Users} />
+          <Route path="/admin/chapters" component={Chapters} />
+          <Route path="/admin/comics" component={Comics} exact />
+          <Route path="/admin/comics/:pageNumber" component={Comics} exact />
+          <Route path="/page/:pageNumber" component={Dashboard} exact />
+          <Route path="/" component={Dashboard} exact />
+        </Switch>
       </Router>
-    </Fragment>
+    </ThemeProvider>
   );
 };
 

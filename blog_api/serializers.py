@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from Comics.models import *
+from users.models import NewUser
+from users.serializers import UserSerializer
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -29,11 +31,13 @@ class GenreSerializer(serializers.ModelSerializer):
 class ComicSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField(read_only=True)
     genres = serializers.SerializerMethodField(read_only=True)
+    favourites = serializers.SerializerMethodField(read_only=True)
+    likes = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Comic
         fields = ['id', 'title', 'image', 'slug', 'category', 'author', 'artist',
-                  'description', 'rating', 'genres', 'status', 'alternativetitle',  'image_url', 'favourites', 'likes', 'like_count']
+                  'description', 'rating', 'genres', 'status', 'alternativetitle',  'image_url', 'favourites', 'likes', 'like_count', 'updated', 'created']
 
     def get_category(self, obj):
         category = obj.category.all()
@@ -43,6 +47,16 @@ class ComicSerializer(serializers.ModelSerializer):
     def get_genres(self, obj):
         genres = obj.genres.all()
         serializer = GenreSerializer(genres, many=True)
+        return serializer.data
+
+    def get_favourites(self, obj):
+        favourites = obj.favourites.all()
+        serializer = UserSerializer(favourites, many=True)
+        return serializer.data
+
+    def get_likes(self, obj):
+        likes = obj.likes.all()
+        serializer = UserSerializer(likes, many=True)
         return serializer.data
 
 
@@ -75,11 +89,13 @@ class ComicsSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField(read_only=True)
     genres = serializers.SerializerMethodField(read_only=True)
     chapters = serializers.SerializerMethodField(read_only=True)
+    favourites = serializers.SerializerMethodField(read_only=True)
+    likes = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Comic
         fields = ['id', 'title', 'image', 'slug', 'category', 'author', 'artist',
-                  'description', 'rating', 'genres', 'status', 'alternativetitle', 'chapters', 'image_url', 'favourites', 'likes', 'like_count']
+                  'description', 'rating', 'genres', 'status', 'alternativetitle', 'chapters', 'image_url', 'favourites', 'likes', 'like_count', 'updated', 'created']
 
     def get_category(self, obj):
         category = obj.category.all()
@@ -94,4 +110,14 @@ class ComicsSerializer(serializers.ModelSerializer):
     def get_chapters(self, obj):
         chapters = obj.chapter_set.all().order_by('-name')[:2]
         serializer = ChapterSerializer(chapters, many=True)
+        return serializer.data
+
+    def get_favourites(self, obj):
+        favourites = obj.favourites.all()
+        serializer = UserSerializer(favourites, many=True)
+        return serializer.data
+
+    def get_likes(self, obj):
+        likes = obj.likes.all()
+        serializer = UserSerializer(likes, many=True)
         return serializer.data

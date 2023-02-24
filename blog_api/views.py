@@ -10,7 +10,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import api_view, permission_classes
 from django.db.models import Q
 from rest_framework import mixins
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.decorators import action
 
 
@@ -30,7 +30,7 @@ class GenreViewSet(mixins.ListModelMixin,
     """
     A simple ViewSet for listing or retrieving genres.
     """
-    queryset = Genre.objects.all()
+
     serializer_class = GenreSerializer
 
     def list(self, request):
@@ -60,8 +60,8 @@ class ComicViewSet(
     """
 
     serializer_class = ComicsSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
+    @permission_classes([AllowAny])
     @action(detail=False)
     def recent_comics(self, request):
         comics = Comic.objects.all().order_by('updated')
@@ -73,6 +73,7 @@ class ComicViewSet(
         serializer = self.get_serializer(comics, many=True)
         return Response(serializer.data)
 
+    @permission_classes([AllowAny])
     @action(detail=False)
     def retrieve(self, request, pk=None):
         queryset = Comic.objects.all()
@@ -83,6 +84,7 @@ class ComicViewSet(
         context = {'comic': serializer.data, 'chapters': serializer1.data}
         return Response(context)
 
+    @permission_classes([IsAuthenticated])
     @action(detail=False)
     def like(self, request, pk=None):
         queryset = Comic.objects.all()
@@ -94,6 +96,7 @@ class ComicViewSet(
             comic.favourites.add(request.user)
             return Response('Comic Added to Favourite')
 
+    @permission_classes([IsAuthenticated])
     @action(detail=False)
     def bookmark_comics(self, request):
         comics = Comic.objects.filter(favourites=request.user)
@@ -110,10 +113,11 @@ class ChapterViewSet(viewsets.ModelViewSet):
     """
     A simple ViewSet for listing or retrieving chapters.
     """
-    queryset = Chapter.objects.all()
-    serializer_class = ChapterSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
+    serializer_class = ChapterSerializer
+
+    @permission_classes([AllowAny])
+    @action(detail=False)
     def list(self, request):
         chapters = Chapter.objects.all().order_by('-updated')
         page = self.paginate_queryset(chapters)
@@ -124,6 +128,8 @@ class ChapterViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(chapters, many=True)
         return Response(serializer.data)
 
+    @permission_classes([IsAuthenticated])
+    @action(detail=False)
     def retrieve(self, request, pk=None):
         queryset = Chapter.objects.all()
         chapter = get_object_or_404(queryset, name=pk)
@@ -204,14 +210,14 @@ class CreatePost(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class AdminPostDetail(generics.RetrieveAPIView):
-    permission_classes = [permissions.IsAdminUser]
+class AdminPostDetail(generics.RetrieveUpdateAPIView):
+    permission_classes = [permissions.AllowAny]
     queryset = Comic.objects.all()
     serializer_class = ComicSerializer
 
 
 class EditPost(generics.UpdateAPIView):
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.AllowAny]
     serializer_class = ComicSerializer
     queryset = Comic.objects.all()
 
