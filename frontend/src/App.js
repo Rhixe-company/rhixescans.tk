@@ -9,12 +9,14 @@ import Chapter from "./pages/Free/Chapter";
 import Genre from "./pages/Free/Genre";
 import Cat from "./pages/Free/Cat";
 import Login from "./pages/Free/Login";
+import Logout from "./pages/Free/Logout";
 import Register from "./pages/Free/Register";
 import Users from "./pages/Protected/Users";
 import Profile from "./pages/Protected/Profile";
 import Comics from "./pages/Protected/Comics";
 import Chapters from "./pages/Protected/Chapters";
 import Bookmarks from "./pages/Protected/Bookmarks";
+import Navbar from "./components/layout/Navbar";
 const theme = createTheme({
   typography: {
     h2: {
@@ -32,10 +34,12 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Router>
+        <Navbar />
         <Switch>
           <Route path="/comic/:slug" component={Comic} />
           <Route path="/chapter/:name" component={Chapter} />
           <Route path="/login" component={Login} />
+          <Route path="/logout" component={Logout} />
           <Route path="/register" component={Register} />
           <Route path="/blog" component={Home} />
           <Route path="/genres/:id" component={Genre} />

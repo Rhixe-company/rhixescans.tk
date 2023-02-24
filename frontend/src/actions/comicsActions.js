@@ -24,24 +24,11 @@ import { logout } from "./userActions";
 
 export const listComics =
   (pageNumber = "") =>
-  async (dispatch, getState) => {
+  async (dispatch) => {
     try {
       dispatch({ type: COMICS_LIST_REQUEST });
-      const {
-        userLogin: { userInfo },
-      } = getState();
 
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      };
-
-      const { data } = await axios.get(
-        `/api/comics/?&page=${pageNumber}`,
-        config
-      );
+      const { data } = await axios.get(`/api/comics/?&page=${pageNumber}`);
       dispatch({
         type: COMICS_LIST_SUCCESS,
         payload: data,
@@ -101,20 +88,11 @@ export const listComicDetails = (slug) => async (dispatch, getState) => {
   }
 };
 
-export const listTopComics = () => async (dispatch, getState) => {
+export const listTopComics = () => async (dispatch) => {
   try {
     dispatch({ type: COMICS_TOP_REQUEST });
-    const {
-      userLogin: { userInfo },
-    } = getState();
 
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
-    const { data } = await axios.get(`/api/comics/top/`, config);
+    const { data } = await axios.get(`/api/comics/top/`);
 
     dispatch({
       type: COMICS_TOP_SUCCESS,

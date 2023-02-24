@@ -9,7 +9,7 @@ class PricePipeline:
 
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
-        if adapter.get('title') and adapter.get('slug'):
+        if adapter.get('title') and adapter.get('slug') or adapter.get('name') or adapter.get('image_urls'):
             obj, created = ComicsManager.objects.filter(
                 Q(title__icontains=item['title']) |
                 Q(slug__icontains=item['slug'])

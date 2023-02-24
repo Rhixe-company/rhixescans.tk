@@ -48,8 +48,8 @@ class ComicsSpider(scrapy.Spider):
         #     yield response.follow(link.get(), callback=self.parse_chapters)
 
         chapter_page = response.css('ul.clstyle li a::attr(href)').get()
-
-        yield response.follow(chapter_page, callback=self.parse_chapters)
+        if chapter_page is not None:
+            yield response.follow(chapter_page, callback=self.parse_chapters)
 
     async def parse_chapters(self, response):
         item = ComicItem()
