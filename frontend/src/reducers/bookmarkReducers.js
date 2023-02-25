@@ -56,7 +56,8 @@ export const comicBookmarkListReducer = (state = {}, action) => {
       return {
         ...state,
         loading: false,
-        comics: action.payload,
+        comics: action.payload.data,
+        pages: action.payload.pages,
       };
 
     case COMICS_BOOKMARK_LIST_FAIL:

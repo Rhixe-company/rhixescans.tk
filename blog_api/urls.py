@@ -16,6 +16,8 @@ urlpatterns = [
          ChapterViewSet.as_view({'get': 'list'}), name="chapters"),
     path('chapter/<str:pk>/',
          ChapterViewSet.as_view({'get': 'retrieve'}), name="chapter"),
+    path('chapters/<str:pk>/reviews/', views.createChapterReview,
+         name="chapter-create-review"),
     path('comics/top/', views.getTopComics, name='top-comics'),
     path('comics/search/', PostListDetailfilter.as_view(), name='searchpost'),
     path('genres/', GenreViewSet.as_view({'get': 'list'}), name="genresapi"),
