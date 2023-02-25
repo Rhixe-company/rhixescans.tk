@@ -9,7 +9,7 @@ urlpatterns = [
     path(
         'bookmarks/', ComicViewSet.as_view({'get': 'bookmark_comics'}), name="bookamrks"),
     path(
-        'bookmarks/<str:pk>/', ComicViewSet.as_view({'get': 'like'}), name="comics_like"),
+        'bookmarks/add/<str:pk>/', ComicViewSet.as_view({'get': 'like'}), name="comics_like"),
     path('comic/<str:pk>/',
          ComicViewSet.as_view({'get': 'retrieve'}), name="comic"),
     path('chapters/',

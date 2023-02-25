@@ -114,7 +114,7 @@ class Comic(models.Model):
     newmanager = NewManager()
 
     class Meta:
-        ordering = ('updated',)
+        ordering = ['updated']
 
     def __str__(self):
         return self.title
@@ -170,7 +170,7 @@ class Chapter(models.Model):
                              on_delete=models.SET_NULL, null=True)
     readers = models.ManyToManyField(
         settings.AUTH_USER_MODEL, blank=True, related_name='reader')
-    comic = models.ForeignKey(Comic, on_delete=models.SET_NULL, null=True)
+    comic = models.ForeignKey(Comic, on_delete=models.CASCADE)
     name = models.CharField(max_length=1000, unique=True, null=True)
     pages = models.ManyToManyField('Page', blank=True, related_name='pages')
     rating = models.DecimalField(
@@ -181,7 +181,7 @@ class Chapter(models.Model):
     created = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        ordering = ('updated',)
+        ordering = ['updated']
 
     def __str__(self):
         return self.name
@@ -237,7 +237,7 @@ class Review(models.Model):
     created = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        ordering = ['updated', 'created']
+        ordering = ['updated']
 
     def __str__(self):
         return self.text

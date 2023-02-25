@@ -151,6 +151,19 @@ textarea {
     color: #fff !important;
 }
 
+.pages-container {
+    max-width: max-content;
+    margin: 0 auto;
+    padding: 0 auto;
+    overflow-y: hidden;
+}
+
+.pages-item {
+    width: 100%;
+    height: auto;
+
+}
+
 @media (max-width: 768px) {
     .header .container {
         flex-direction: column;

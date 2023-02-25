@@ -69,7 +69,7 @@ export const bookmarkComic = (slug) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/bookmarks/${slug}/`, config);
+    const { data } = await axios.get(`/api/bookmarks/add/${slug}/`, config);
     dispatch({
       type: COMICS_BOOKMARK_ADD_SUCCESS,
       payload: data,

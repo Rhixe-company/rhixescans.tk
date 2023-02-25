@@ -53,15 +53,14 @@ class GenreViewSet(mixins.ListModelMixin,
 
 
 class ComicViewSet(
-        mixins.ListModelMixin,
+    mixins.ListModelMixin,
         viewsets.GenericViewSet):
     """
     A simple ViewSet for listing or retrieving comics.
     """
-
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = ComicsSerializer
 
-    @permission_classes([AllowAny])
     @action(detail=False)
     def recent_comics(self, request):
         comics = Comic.objects.all().order_by('updated')
@@ -73,7 +72,6 @@ class ComicViewSet(
         serializer = self.get_serializer(comics, many=True)
         return Response(serializer.data)
 
-    @permission_classes([AllowAny])
     @action(detail=False)
     def retrieve(self, request, pk=None):
         queryset = Comic.objects.all()
@@ -84,19 +82,28 @@ class ComicViewSet(
         context = {'comic': serializer.data, 'chapters': serializer1.data}
         return Response(context)
 
-    @permission_classes([IsAuthenticated])
     @action(detail=False)
     def like(self, request, pk=None):
         queryset = Comic.objects.all()
         comic = get_object_or_404(queryset, slug=pk)
+        serializer = ComicSerializer(comic)
         if comic.favourites.filter(id=request.user.id).exists():
             comic.favourites.remove(request.user)
-            return Response('Comic Removed from Favourite')
+            context = {
+
+                'status': 'Comic Removed from Favourite',
+                'data': serializer.data,
+            }
+            return Response(context)
         else:
             comic.favourites.add(request.user)
-            return Response('Comic Added to Favourite')
+            context = {
 
-    @permission_classes([IsAuthenticated])
+                'status': 'Comic Added to Favourite',
+                'data': serializer.data,
+            }
+            return Response(context)
+
     @action(detail=False)
     def bookmark_comics(self, request):
         comics = Comic.objects.filter(favourites=request.user)
