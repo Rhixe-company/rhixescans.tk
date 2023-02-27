@@ -1,7 +1,7 @@
 from scrapy.pipelines.images import ImagesPipeline
 from scrapy.exceptions import DropItem
 from itemadapter import ItemAdapter
-from Comics.models import ComicsManager, Genre, Categorys, Chapter, Page
+from Comics.models import ComicsManager, Comic, Genre, Categorys, Chapter, Page
 from django.db.models import Q
 
 
@@ -9,27 +9,72 @@ class PricePipeline:
 
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
-        if adapter.get('title') and adapter.get('slug') or adapter.get('name') or adapter.get('image_urls'):
-            obj, created = ComicsManager.objects.filter(
-                Q(title__icontains=item['title']) |
-                Q(slug__icontains=item['slug'])
-            ).update_or_create(image_url=item['image_url'],  rating=item['rating'], status=item['status'], description=item['description'], released=item['released'],  author=item['author'],  artist=item['artist'], alternativetitle=item['alternativetitle'], serialization=item['serialization'], created_by=item['created_by'], defaults={'title': item['title'], 'slug': item['slug']})
-            obj2, created = Categorys.objects.filter(
-                Q(name__icontains=item['category'])
-            ).update_or_create(
-                name=item['category'], defaults={'name': item['category']})
-            obj.category.add(obj2)
-            for genre in item['genres']:
-                obj1, created = Genre.objects.filter(
-                    Q(name__icontains=genre)
+        if adapter.get('title') and adapter.get('slug'):
+            if adapter.get('title') and adapter.get('slug') and adapter.get('name') and adapter.get('image_urls') and ComicsManager.objects.get(title=item['title']):
+                comic = Comic.objects.filter(
+                    Q(title__icontains=item['title']) |
+                    Q(slug__icontains=item['slug'])
+                ).get(title=item['title'])
+                obj3, created = Chapter.objects.filter(
+                    Q(name__icontains=item['name'])
+                ).update_or_create(comic=comic,  defaults={'name': item['name']})
+                for img in item['image_urls']:
+                    obj4, created = Page.objects.filter(
+                        Q(image_urls__icontains=img)
+                    ).update_or_create(chapter=obj3, defaults={'image_urls': img})
+                    obj3.pages.add(obj4)
+                    obj3.numPages = obj3.page_set.all().count()
+                    obj3.save()
+                comic.numChapters = comic.chapter_set.all().count()
+                comic.save()
+            else:
+                obj, created = ComicsManager.objects.filter(
+                    Q(title__icontains=item['title'])
+                ).update_or_create(slug=item['slug'], image_url=item['image_url'],  rating=item['rating'], status=item['status'], description=item['description'], released=item['released'],  author=item['author'],  artist=item['artist'], alternativetitle=item['alternativetitle'], serialization=item['serialization'], created_by=item['created_by'], defaults={'title': item['title']})
+                obj2, created = Categorys.objects.filter(
+                    Q(name__icontains=item['category'])
                 ).update_or_create(
-                    name=genre, defaults={'name': genre})
-                obj.genres.add(obj1)
-                obj.save()
+                    name=item['category'], defaults={'name': item['category']})
+                obj.category.add(obj2)
+                for genre in item['genres']:
+                    obj1, created = Genre.objects.filter(
+                        Q(name__icontains=genre)
+                    ).update_or_create(
+                        name=genre, defaults={'name': genre})
+                    obj.genres.add(obj1)
+                    obj.save()
 
             return item
         else:
             raise DropItem(f"Missing field in Comic:{item}")
+
+
+# class PricePipeline:
+
+#     def process_item(self, item, spider):
+#         adapter = ItemAdapter(item)
+#         if ComicsManager.objects.get(title=adapter.get('title')):
+#             raise DropItem(f"{item}: Found in Database")
+
+#         else:
+#             obj, created = ComicsManager.objects.filter(
+#                 Q(title__icontains=item['title']) |
+#                 Q(slug__icontains=item['slug'])
+#             ).update_or_create(image_url=item['image_url'],  rating=item['rating'], status=item['status'], description=item['description'], released=item['released'],  author=item['author'],  artist=item['artist'], alternativetitle=item['alternativetitle'], serialization=item['serialization'], created_by=item['created_by'], defaults={'title': item['title'], 'slug': item['slug']})
+#             obj2, created = Categorys.objects.filter(
+#                 Q(name__icontains=item['category'])
+#             ).update_or_create(
+#                 name=item['category'], defaults={'name': item['category']})
+#             obj.category.add(obj2)
+#             for genre in item['genres']:
+#                 obj1, created = Genre.objects.filter(
+#                     Q(name__icontains=genre)
+#                 ).update_or_create(
+#                     name=genre, defaults={'name': genre})
+#                 obj.genres.add(obj1)
+#                 obj.save()
+
+#             return item
 # class PricePipeline:
 
 #     existcomic = ComicsManager

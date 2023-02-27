@@ -1,0 +1,6 @@
+{% load static %} {% load crispy_forms_tags %}
+<ul class="messages">
+  {% if messages %} {% for message in messages %}
+  <li>{{ message }}</li>
+  {% endfor %} {% endif %}
+</ul>

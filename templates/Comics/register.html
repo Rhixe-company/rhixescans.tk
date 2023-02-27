@@ -1,0 +1,27 @@
+{% extends 'base/base.html' %}{% load static %} {% block content %}
+<main id="register">
+  {% load crispy_forms_tags %} {% if messages %} {% for message in messages %}
+  {% if message.tags == 'success' %}
+  <div class="alert alert-success" role="alert">
+    <span>{{message}}</span>
+  </div>
+  {% elif message.tags == 'error' %}
+  <div class="alert alert-danger" role="alert">
+    <span>{{message}}</span>
+  </div>
+  {% endif %} {% endfor %} {% endif %}
+  <h3>Register</h3>
+  <hr />
+  <form method="POST" action="?next={{ request.META.HTTP_REFERER }}">
+    {% csrf_token %} {{form|crispy}}
+    <input
+      class="btn btn-primary btn-lg btn-block"
+      type="submit"
+      value="Register"
+    />
+  </form>
+
+  <br />
+  <p>Already have an account? <a href="{% url 'Comics:login' %}">Login</a></p>
+</main>
+{% include 'base/footer.html' %} {% endblock content %}

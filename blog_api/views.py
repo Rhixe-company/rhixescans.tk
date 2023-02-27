@@ -95,68 +95,68 @@ class GenreViewSet(mixins.ListModelMixin,
         return Response(context)
 
 
-class ComicViewSet(
-    mixins.ListModelMixin,
-        viewsets.GenericViewSet):
+class ComicViewSet(generics.ListAPIView):
     """
     A simple ViewSet for listing or retrieving comics.
     """
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Comic.objects.all()
     serializer_class = ComicsSerializer
+    pagination_class = CustomPagination
 
-    @action(detail=False)
-    def recent_comics(self, request):
-        comics = Comic.objects.all().order_by('updated')
-        page = self.paginate_queryset(comics)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+    # @action(detail=False)
+    # def get_queryset(self, request):
+    #     # comics = Comic.objects.all().order_by('updated')
+    #     comics = Comic.objects.all().order_by('-updated')
+    #     page = self.paginate_queryset(comics)
+    #     if page is not None:
+    #         serializer = self.get_serializer(page, many=True)
+    #         return self.get_paginated_response(serializer.data)
 
-        serializer = self.get_serializer(comics, many=True)
-        return Response(serializer.data)
+    #     serializer = self.get_serializer(comics, many=True)
+    #     return Response(serializer.data)
 
-    @action(detail=False)
-    def retrieve(self, request, pk=None):
-        queryset = Comic.objects.all()
-        comic = get_object_or_404(queryset, slug=pk)
-        chapters = comic.chapter_set.all().order_by('-name')
-        serializer = ComicSerializer(comic)
-        serializer1 = ChapterSerializer(chapters, many=True)
-        context = {'comic': serializer.data, 'chapters': serializer1.data}
-        return Response(context)
+    # @action(detail=False)
+    # def retrieve(self, request, pk=None):
+    #     queryset = Comic.objects.all()
+    #     comic = get_object_or_404(queryset, slug=pk)
+    #     chapters = comic.chapter_set.all().order_by('-name')
+    #     serializer = ComicSerializer(comic)
+    #     serializer1 = ChapterSerializer(chapters, many=True)
+    #     context = {'comic': serializer.data, 'chapters': serializer1.data}
+    #     return Response(context)
 
-    @action(detail=False)
-    def like(self, request, pk=None):
-        queryset = Comic.objects.all()
-        comic = get_object_or_404(queryset, slug=pk)
-        serializer = ComicSerializer(comic)
-        if comic.favourites.filter(id=request.user.id).exists():
-            comic.favourites.remove(request.user)
-            context = {
+    # @action(detail=False)
+    # def like(self, request, pk=None):
+    #     queryset = Comic.objects.all()
+    #     comic = get_object_or_404(queryset, slug=pk)
+    #     serializer = ComicSerializer(comic)
+    #     if comic.favourites.filter(id=request.user.id).exists():
+    #         comic.favourites.remove(request.user)
+    #         context = {
 
-                'status': 'Comic Removed from Favourite',
-                'data': serializer.data,
-            }
-            return Response(context)
-        else:
-            comic.favourites.add(request.user)
-            context = {
+    #             'status': 'Comic Removed from Favourite',
+    #             'data': serializer.data,
+    #         }
+    #         return Response(context)
+    #     else:
+    #         comic.favourites.add(request.user)
+    #         context = {
 
-                'status': 'Comic Added to Favourite',
-                'data': serializer.data,
-            }
-            return Response(context)
+    #             'status': 'Comic Added to Favourite',
+    #             'data': serializer.data,
+    #         }
+    #         return Response(context)
 
-    @action(detail=False)
-    def bookmark_comics(self, request):
-        comics = Comic.objects.filter(favourites=request.user)
-        page = self.paginate_queryset(comics)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+    # @action(detail=False)
+    # def bookmark_comics(self, request):
+    #     comics = Comic.objects.filter(favourites=request.user)
+    #     page = self.paginate_queryset(comics)
+    #     if page is not None:
+    #         serializer = self.get_serializer(page, many=True)
+    #         return self.get_paginated_response(serializer.data)
 
-        serializer = self.get_serializer(comics, many=True)
-        return Response(serializer.data)
+    #     serializer = self.get_serializer(comics, many=True)
+    #     return Response(serializer.data)
 
 
 class ChapterViewSet(viewsets.ModelViewSet):

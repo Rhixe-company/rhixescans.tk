@@ -1,14 +1,10 @@
 import scrapy
-from Comics.models import ComicsManager, Chapter, Page, Genre, Categorys
-from django.db.models import Q
 from scraper.items import ComicItem
 
 
 class ComicsSpider(scrapy.Spider):
     name = 'comics'
-
-    def start_requests(self):
-        yield scrapy.Request('https://www.asurascans.com/manga/?page=1&order=update')
+    start_urls = ['https://www.asurascans.com/manga/?page=1&order=update']
 
     def parse(self, response):
         for link in response.css('.bsx a::attr(href)'):
@@ -60,18 +56,3 @@ class ComicsSpider(scrapy.Spider):
         item['image_urls'] = response.css(
             '.hentry .rdminimal p .size-full::attr(src)').getall()
         yield item
-        comic = ComicsManager.objects.filter(Q(title__icontains=item['title']) |
-                                             Q(slug__icontains=item['slug'])).get(title=item['title'])
-        if comic:
-            obj3, created = Chapter.objects.filter(
-                Q(name__icontains=item['name'])
-            ).update_or_create(comic=comic,  defaults={'name': item['name']})
-            for img in item['image_urls']:
-                obj4, created = Page.objects.filter(
-                    Q(image_urls__icontains=img)
-                ).update_or_create(chapter=obj3, defaults={'image_urls': img})
-                obj3.pages.add(obj4)
-                obj3.numPages = obj3.page_set.all().count()
-                obj3.save()
-            comic.numChapters = comic.chapter_set.all().count()
-            comic.save()

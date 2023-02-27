@@ -1,24 +1,6 @@
 server {
     listen 80;
-    server_name localhost;
-
-    location = /favicon.ico { access_log off; log_not_found off; }
-    location /static/ {
-                root /home/bot/Desktop/dev/projects/rhixescans.tk;
-                try_files $uri $uri/ =404;
-            }
-
-    location /build/ {
-                root /home/bot/Desktop/dev/projects/rhixescans.tk/frontend;
-                try_files $uri $uri/ =404;
-            }
-      
-    
-    location /media/ {
-                root /home/bot/Desktop/dev/projects/rhixescans.tk/static;
-                try_files $uri $uri/ =404;
-            }
-    
+    server_name localhost;   
 
     location / {
         include proxy_params;
@@ -29,4 +11,20 @@ server {
         proxy_cache_bypass $http_upgrade;
        	
     }
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location /static/ {
+                    root /home/bot/Desktop/dev/projects/rhixescans.tk;
+                    try_files $uri $uri/ =404;
+           }
+    
+    location /build/ {
+                    root /home/bot/Desktop/dev/projects/rhixescans.tk/frontend;
+                    try_files $uri $uri/ =404;
+            }
+          
+        
+        location /media/  {
+                    root /home/bot/Desktop/dev/projects/rhixescans.tk;
+                    try_files $uri $uri/ =404;
+                }
 }

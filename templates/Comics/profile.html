@@ -1,0 +1,67 @@
+{% extends 'base/base.html' %}{% load static %} {% block content %}
+<main id="profile">
+  {% load crispy_forms_tags %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card card-body" id="user-info-box">
+          <img id="user_pic" src="{{user.avatar.url}}" />
+          <br />
+          <h2>Username: {{user.user_name}}</h2>
+          <p>Email: {{user.email}}</p>
+          <hr />
+          <p>Firstname: {{user.first_name}}</p>
+          <hr />
+          <p>About: {{user.about}}</p>
+          <hr />
+          <a class="btn btn-info btn-block" href="#">Edit Profile</a>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="card card-body">
+          <h3>My Comics:</h3>
+          <hr />
+          <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Image</th>
+                <th>Chapters</th>
+                <th>Genres</th>
+                <th>Categorys</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>5</th>
+                <th>Lorem ipsum</th>
+                <th>
+                  <img src="" alt="" />
+                </th>
+                <th>
+                  <select name="" id=""></select>
+                </th>
+                <th>
+                  <select name="" id=""></select>
+                </th>
+                <th>
+                  <select name="" id=""></select>
+                </th>
+                <th>
+                  <a href="#">Edit</a>
+                </th>
+                <th>
+                  <a href="#">Delete</a>
+                </th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% include 'base/footer.html' %} {% endblock content %}

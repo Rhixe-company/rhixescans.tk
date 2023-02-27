@@ -1,0 +1,82 @@
+{% extends 'base/base.html' %}{% load static %} {% block content %}
+<main id="chapter">
+  {% load crispy_forms_tags %}
+  <div class="chapters">
+    <div class="item">
+      <nav>
+        <ul>
+          <li>
+            <a class="btn-light" href="{{post.comic.get_absolute_url}}">
+              {{post.comic.title}}
+            </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              data-bs-toggle="dropdown"
+              href="{{post.get_absolute_url}}"
+              role="button"
+              aria-expanded="false"
+              >{{post.name}}</a
+            >
+
+            <ul class="dropdown-menu">
+              {% for chapter in chapters %}
+              <li>
+                <a class="dropdown-item" href="{{chapter.get_absolute_url}}"
+                  >{{chapter.name}}</a
+                >
+              </li>
+
+              <li><hr class="dropdown-divider" /></li>
+              {% endfor %}
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    {% for page in pages %}
+    <div class="item">
+      <img src="{{page.images.url}}" alt="{{page.chapter.name}}" />
+    </div>
+    {% empty %}
+    <small>no Page</small>
+    {% endfor %}
+    <div class="item">
+      <nav>
+        <ul>
+          <li>
+            <a class="btn-light" href="{{post.comic.get_absolute_url}}">
+              {{post.comic.title}}
+            </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a
+              class="btn-dark nav-link dropdown-toggle"
+              data-bs-toggle="dropdown"
+              href="{{post.get_absolute_url}}"
+              role="button"
+              aria-expanded="false"
+              >{{post.name}}</a
+            >
+
+            <ul class="dropdown-menu">
+              {% for chapter in chapters %}
+              <li>
+                <a
+                  class="btn-dark dropdown-item"
+                  href="{{chapter.get_absolute_url}}"
+                  >{{chapter.name}}</a
+                >
+              </li>
+
+              <li><hr class="dropdown-divider" /></li>
+              {% endfor %}
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</main>
+{% include 'base/footer.html' %} {% endblock content %}

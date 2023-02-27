@@ -1,0 +1,58 @@
+{% extends 'base/base.html' %} {% load static %}{% block content %}
+<main id="home">
+  {% load crispy_forms_tags %}
+  <div>
+    <h1 class="lg-heading">Top <span class="textsecondary">Comics</span></h1>
+    <div id="carouselExample" class="carousel slide">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="" alt="" />
+        </div>
+        {% for comic in comics %}
+        <div class="carousel-item">
+          <a href="{{comic.get_absolute_url}}">
+            <img src="{{comic.image.url}}" alt="{{comic.title}}" />
+          </a>
+        </div>
+        {% empty %}
+        <h1>No Comics</h1>
+        {% endfor %}
+      </div>
+      <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#carouselExample"
+        data-bs-slide="prev"
+      >
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#carouselExample"
+        data-bs-slide="next"
+      >
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </div>
+  <br />
+  {% include 'Comics/Comics_feed.html' %}
+  <div class="icons">
+    <a href="#!">
+      <i class="fab fa-twitter fa-2x"></i>
+    </a>
+    <a href="#!">
+      <i class="fab fa-facebook fa-2x"></i>
+    </a>
+    <a href="#!">
+      <i class="fab fa-linkedin fa-2x"></i>
+    </a>
+    <a href="#!">
+      <i class="fab fa-github fa-2x"></i>
+    </a>
+  </div>
+</main>
+{% endblock content %}

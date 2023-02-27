@@ -7,6 +7,7 @@ from io import BytesIO
 from django.core import files
 from requests_html import HTMLSession
 from PIL import Image
+from django.urls import reverse
 # from django.db.models.signals import post_save
 # from django.contrib.auth.models import User
 # from django.dispatch import receiver
@@ -106,12 +107,15 @@ class Comic(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(default=timezone.now)
     favourites = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name='favourite', blank=True,  default=None)
+        settings.AUTH_USER_MODEL, related_name='favourite', blank=True,)
     likes = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name='like', default=None, blank=True)
-    like_count = models.IntegerField(blank=True)
+        settings.AUTH_USER_MODEL, related_name='like', blank=True)
+    like_count = models.IntegerField(default=0, blank=True, null=True)
     objects = models.Manager()  # default manager
     newmanager = NewManager()
+
+    def get_absolute_url(self):
+        return reverse('Comics:comic', args=[self.slug])
 
     class Meta:
         ordering = ['updated']
@@ -179,6 +183,9 @@ class Chapter(models.Model):
     numPages = models.IntegerField(default=0, null=True, blank=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(default=timezone.now)
+
+    def get_absolute_url(self):
+        return reverse('Comics:chapter', args=[self.name])
 
     class Meta:
         ordering = ['updated']

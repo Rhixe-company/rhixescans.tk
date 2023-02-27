@@ -50,16 +50,21 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'Comics.apps.ComicsConfig',
     'users.apps.UsersConfig',
-    'rest_framework',
-    'corsheaders',
+    # 'rest_framework',
+    # 'corsheaders',
     'scraper',
+    'crispy_forms',
     'django_filters',
+    'ckeditor',
+    'ckeditor_uploader',
     'storages',
-    'blog_api',
+    # 'blog_api',
 ]
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
+    # "corsheaders.middleware.CorsMiddleware",
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -75,7 +80,7 @@ ROOT_URLCONF = 'rhixescans.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'frontend/build')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -151,22 +156,22 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
     #BASE_DIR / 'static',
-    BASE_DIR / 'frontend/build/static/'
+    BASE_DIR / 'static/Comics'
 ]
 
 MEDIA_ROOT = BASE_DIR / 'media'
-# STATIC_ROOT = BASE_DIR / 'static'
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'DEFAULT_SCHEMA_CLASS': ('rest_framework.schemas.coreapi.AutoSchema'),
-    'DEFAULT_PAGINATION_CLASS': 'Comics.pagination.CustomPagination',
-    'PAGE_SIZE': 24
-}
+
+# REST_FRAMEWORK = {
+#     # 'DEFAULT_PERMISSION_CLASSES': [
+#     #     'rest_framework.permissions.AllowAny',
+#     # ],
+#     # 'DEFAULT_AUTHENTICATION_CLASSES': (
+#     #     'rest_framework_simplejwt.authentication.JWTAuthentication',
+#     # ),
+#     # 'DEFAULT_SCHEMA_CLASS': ('rest_framework.schemas.coreapi.AutoSchema'),
+#     'DEFAULT_PAGINATION_CLASS': 'Comics.pagination.CustomPagination',
+#     'PAGE_SIZE': 24
+# }
 
 # Permissions:
 # AllowAny
@@ -175,30 +180,30 @@ REST_FRAMEWORK = {
 # IsAuthenticatedOrReadOnly
 # CORS_ALLOW_ALL_ORIGINS = True
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "http://127.0.0.1:3000",
+# ]
 
-# Custom user model
+# # Custom user model
 AUTH_USER_MODEL = "users.NewUser"
 
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'UPDATE_LAST_LOGIN': False,
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,
-    'VERIFYING_KEY': None,
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'TOKEN_TYPE_CLAIM': 'token_type',
-}
+# SIMPLE_JWT = {
+#     'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
+#     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+#     'ROTATE_REFRESH_TOKENS': False,
+#     'BLACKLIST_AFTER_ROTATION': True,
+#     'UPDATE_LAST_LOGIN': False,
+#     'ALGORITHM': 'HS256',
+#     'SIGNING_KEY': SECRET_KEY,
+#     'VERIFYING_KEY': None,
+#     'AUTH_HEADER_TYPES': ('Bearer',),
+#     'USER_ID_FIELD': 'id',
+#     'USER_ID_CLAIM': 'user_id',
+#     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+#     'TOKEN_TYPE_CLAIM': 'token_type',
+# }
 
 # # Email Config
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -206,14 +211,30 @@ EMAIL_HOST = os.environ.get('HOST')
 EMAIL_HOST_USER = os.environ.get('HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('HOST_PASSWORD')
 EMAIL_PORT = os.environ.get('PORT')
+EMAIL_USE_TLS = True
 
-# AWS_QUERYSTRING_AUTH = False
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+CKEDITOR_UPLOAD_PATH = 'uploads/'
 
-# AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-# AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': '100%',
+    },
+}
 
-# AWS_STORAGE_BUCKET_NAME = 'proshop-bucket-demo'
+AWS_QUERYSTRING_AUTH = False
+
+#STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+#AWS_ACCESS_KEY_ID = 'YOUR-AWS-ACCESS-KEY-ID'
+#AWS_SECRET_ACCESS_KEY = 'YOUR_AWS-SECRET-ACCESS-KEY'
+#AWS_STORAGE_BUCKET_NAME = 'YOU_BUCKET_NAME'
+
+#AWS_S3_FILE_OVERWRITE = False
+#AWS_DEFAULT_ACL = None
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 

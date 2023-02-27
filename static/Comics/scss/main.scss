@@ -1,0 +1,170 @@
+@import 'config';
+@import 'menu';
+
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    @include background;
+    background: $primary-color;
+    color: set-text-color($primary-color);
+    height: 100%;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.5;
+}
+
+// Headings
+h1,
+h2,
+h3 {
+    margin: 0;
+    font-weight: 400;
+
+    &.lg-heading {
+        font-size: 3rem;
+    }
+
+    &.sm-heading {
+        margin-top: 2rem;
+        padding: 0.2rem 1rem;
+    }
+}
+
+ul {
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+    color: #fff
+}
+
+header {
+    position: fixed;
+    z-index: 2;
+    width: 100%;
+}
+
+.textsecondary {
+    color: $secondary-color;
+}
+
+main {
+    padding: 4rem;
+    //height: 100%;
+    min-height: calc(100vh - 60px);
+
+    .icons {
+        margin-top: 1rem;
+
+        a {
+            padding: 0.4rem;
+
+            &:hover {
+                color: $secondary-color;
+                @include easeOut()
+            }
+        }
+    }
+
+    &#home {
+        overflow: hidden;
+
+        h1 {
+            margin-top: 10vh;
+        }
+    }
+}
+
+.carousel-item-next,
+.carousel-item-prev,
+.carousel-item.active {
+    display: flex;
+}
+
+.carousel img {
+    display: block;
+    height: 400px;
+    padding: 30px;
+    margin: 50px;
+    border-radius: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.card {
+    background: lighten($primary-color, 5);
+}
+
+.comic-info {
+    display: grid;
+    grid-gap: 30px;
+    grid-template-areas:
+        'bioimage bio bio'
+        'job1 job2 job3 ';
+    grid-template-columns: repeat(3, 1fr);
+
+    .comic-image {
+        grid-area: bioimage;
+        margin: auto;
+        border: $secondary-color 3px solid;
+        width: 400px;
+    }
+
+    .bio {
+        grid-area: bio;
+    }
+
+    .job-1 {
+        grid-area: job1;
+    }
+
+    .job-2 {
+        grid-area: job2;
+    }
+
+    .job-3 {
+        grid-area: job3;
+    }
+
+    .job {
+        background: lighten($primary-color, 5);
+        padding: 0.5rem;
+        border-bottom: $secondary-color 5px solid;
+    }
+}
+
+// Chapter
+.chapters {
+    display: grid;
+    grid-gap: 0.7rem;
+    grid-template-columns: repeat(1, 1fr);
+
+    img {
+        width: 100%;
+        border: 3px #fff solid;
+
+        &:hover {
+            //opacity: 0.5;
+            border-color: $secondary-color;
+            @include easeOut
+        }
+    }
+}
+
+// Button Styles
+
+
+
+#main-footer {
+    text-align: center;
+    padding: 1rem;
+    background: darken($primary-color, 10);
+    color: set-text-color($primary-color);
+    height: 60px;
+}
+
+@import 'mobile';
